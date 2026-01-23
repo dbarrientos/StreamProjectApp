@@ -6,6 +6,7 @@ const RaffleWheel = ({ participants, spinning, winner, onAnimationFinish }) => {
   const [offset, setOffset] = useState(0);
   const [transitionDuration, setTransitionDuration] = useState(0);
   const lastWinnerRef = useRef(null);
+  const animationTimeoutRef = useRef(null);
   const itemHeight = 60; // Height of each name item in pixels
 
   useEffect(() => {
@@ -14,6 +15,13 @@ const RaffleWheel = ({ participants, spinning, winner, onAnimationFinish }) => {
       const revolutions = 5; // How many times to loop through the list?
       const minItems = 50;   // Minimum items to scroll through
       let tempStrip = [];
+      
+      // 0. Safety Check
+      if (!participants || participants.length === 0) {
+          console.warn("RaffleWheel: No participants to spin with.");
+          onAnimationFinish();
+          return;
+      }
       
       // Fill with random participants to create length
       while (tempStrip.length < minItems) {
@@ -52,20 +60,20 @@ const RaffleWheel = ({ participants, spinning, winner, onAnimationFinish }) => {
         
         // Update last winner
         lastWinnerRef.current = winner;
-      }, 50);
-
-    } else if (!spinning) {
-        // Only reset to static strip if we don't have a strip yet (fresh mount)
-        // OR if the winner has changed (e.g. Al Agua -> New Winner/Loser name)
-        // This prevents the visual "disappearance" glitch when spin ends
         
-        if (winner && (strip.length === 0 || lastWinnerRef.current !== winner)) {
-            setStrip([winner]);
-            setOffset(-34); // Keep it centered: 0 (top) - 34 (shift)
-            setTransitionDuration(0);
-            lastWinnerRef.current = winner;
+        // Use setTimeout instead of onTransitionEnd (more reliable)
+        if (animationTimeoutRef.current) {
+          clearTimeout(animationTimeoutRef.current);
         }
+        animationTimeoutRef.current = setTimeout(() => {
+          console.log('Animation finished via timeout');
+          onAnimationFinish();
+        }, 6000); // Match the transition duration
+      }, 50);
     }
+
+    // REMOVED: Don't reset strip when spinning=false, it prevents onTransitionEnd from firing
+    // The transition must complete before we change the strip
   }, [spinning, winner, participants]);
 
   const handleTransitionEnd = () => {

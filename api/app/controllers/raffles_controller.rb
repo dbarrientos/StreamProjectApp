@@ -33,13 +33,17 @@ class RafflesController < ApplicationController
   def register_winner
     raffle = current_user.raffles.find(params[:id])
     
-    # We now allow multiple results per raffle
+    # We now allow multiple results per raffle, but prevent duplicates for the same spin
+    # If a record exists for this user with 'pending_reveal' (set during spin start), update it.
     
-    winner = raffle.winners.build(winner_params)
+    winner = raffle.winners.find_or_initialize_by(username: winner_params[:username])
+    
+    # Only update if it's new or was pending. If it was already final (won/lost), we might be overwriting or creating new logic 
+    # But simplifies to just update the attributes
+    winner.assign_attributes(winner_params)
     
     if winner.save
-      # Mark raffle completed only if it's a real winner
-      raffle.completed! if winner.won?
+      # raffle.completed! if winner.won? -- Don't auto-complete, wait for manual finish
       render json: winner, status: :created
     else
       render json: winner.errors, status: :unprocessable_entity

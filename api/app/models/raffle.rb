@@ -7,7 +7,7 @@ class Raffle < ApplicationRecord
   # SQLite stores JSON as text, but Rails handles the serialization.
   # If using Postgres in prod, this behaves as JSONB if migrated correctly.
   
-  enum status: { created: 'created', active: 'active', completed: 'completed', cancelled: 'cancelled' }
+  enum status: { created: 'created', active: 'active', spinning: 'spinning', completed: 'completed', cancelled: 'cancelled' }
 
   validates :title, presence: true
   before_create :generate_public_id

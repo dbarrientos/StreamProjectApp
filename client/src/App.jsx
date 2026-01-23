@@ -52,7 +52,7 @@ function App() {
                </ProtectedRoute>
              } 
            />
-           <Route path="/raffle-view/:id" element={<RaffleView />} />
+           <Route path="/raffle/:id" element={<RaffleView />} />
            <Route path="/raffle-results/:public_id" element={<RaffleResults />} />
         </Routes>
         </AuthProvider>

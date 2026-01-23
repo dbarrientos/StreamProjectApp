@@ -7,7 +7,8 @@ import Layout from "../components/Layout";
 import { 
     Twitch, Type, Settings, Timer, Lock, 
     MessageSquare, Star, Play, Loader2, 
-    Trash2, ChevronDown, Users, Monitor, Copy
+    Trash2, ChevronDown, Users, Monitor, Copy,
+    Clock, RefreshCw
 } from 'lucide-react';
 import {
   createRaffle,
@@ -40,6 +41,7 @@ const RafflePage = () => {
   const [isImporting, setIsImporting] = useState(false);
   const [useCountdown, setUseCountdown] = useState(false);
   const [countdownDuration, setCountdownDuration] = useState(60);
+  const [pastWinners, setPastWinners] = useState(new Set());
 
   const clientRef = useRef(null);
   const channelRef = useRef(null);
@@ -209,9 +211,18 @@ const RafflePage = () => {
   const closeEntriesAndSpin = async () => {
     if (participants.length === 0) return alert("¡No hay participantes!");
 
-    // 1. Determine winner
-    const randomIndex = Math.floor(Math.random() * participants.length);
-    const selectedWinner = participants[randomIndex];
+    // 1. Open Separate Window (Sync for popup blockers)
+    if (currentPublicId) {
+        window.open(`/raffle/${currentPublicId}`, 'raffle_window', 'width=1000,height=800');
+    }
+
+    // 2. Determine winner from ELIGIBLE participants only
+    const eligibleParticipants = participants.filter(p => !pastWinners.has(p));
+    
+    if (eligibleParticipants.length === 0) return alert("¡No hay participantes elegibles!");
+
+    const randomIndex = Math.floor(Math.random() * eligibleParticipants.length);
+    const selectedWinner = eligibleParticipants[randomIndex];
     winnerRef.current = selectedWinner;
     
     // 2. Sync to Backend (Critical for OBS/Remote View)
@@ -223,10 +234,13 @@ const RafflePage = () => {
                 status: "pending_reveal",
                 claimed_at: null
              });
-             // Set status to SPINNING
-             await updateRaffle(currentRaffleIdRef.current, { status: 'spinning' });
+             // Set status to SPINNING and Sync Participants (SEND FULL LIST for history)
+             await updateRaffle(currentRaffleIdRef.current, { 
+                status: 'spinning',
+                participants: participants 
+             });
         } catch (e) {
-            console.error("Failed to sync spin state", e);
+             console.error("Failed to sync spin state", e);
         }
     }
 
@@ -238,21 +252,20 @@ const RafflePage = () => {
     channelRef.current?.postMessage({
         type: 'START_SPIN',
         payload: {
-            participants,
+            participants: eligibleParticipants, // Send only eligible to legacy view if used
             winner: selectedWinner,
             title: raffleTitle
         }
     });
 
-    // 5. Trigger Wheel spin
-    setSpinning(true);
+    // 5. Wheel spin triggered by status change to SPINNING
   };
 
   const onWheelFinish = () => {
     setStatus("REVIEW");
   };
 
-  const confirmWinner = () => {
+  const confirmWinner = async () => {
     if (useCountdown) {
         setStatus("WAITING");
         setTimeLeft(countdownDuration);
@@ -260,6 +273,22 @@ const RafflePage = () => {
             type: 'WAIT_FOR_WINNER',
             payload: { timeLeft: countdownDuration }
         });
+
+        // Sync to backend for polling view
+        // We use 'claimed_at' to store the EXPIRATION time during the waiting phase
+        const expirationTime = new Date(Date.now() + countdownDuration * 1000);
+        
+        if (currentRaffleIdRef.current) {
+            try {
+                await registerWinner(currentRaffleIdRef.current, {
+                    username: winnerRef.current,
+                    status: "waiting_claim",
+                    claimed_at: expirationTime.toISOString()
+                });
+            } catch (e) {
+                console.error("Failed to sync waiting state", e);
+            }
+        }
     } else {
         handleWin();
     }
@@ -338,6 +367,7 @@ const RafflePage = () => {
       setStatus("IDLE");
       setWinner(null);
       setParticipants([]);
+      setPastWinners(new Set());
       setCurrentRaffleId(null);
       setCurrentPublicId(null);
       setRaffleTitle("");
@@ -350,9 +380,9 @@ const RafflePage = () => {
   };
 
   const handleContinueRaffle = () => {
-      // Remove current winner from participants
-      if (winner) {
-          setParticipants(prev => prev.filter(p => p !== winner));
+      // Add current winner to pastWinners (only if they WON, keep them if TIMEOUT/LOSS/AL_AGUA)
+      if (winner && status === 'WIN') {
+          setPastWinners(prev => new Set(prev).add(winner));
       }
       
       // Reset state for next spin
@@ -635,15 +665,16 @@ const RafflePage = () => {
                             {useCountdown && (
                                 <div className="ml-2 pl-4 border-l-2 border-skin-accent/20">
                                     <label className="block text-xs font-bold text-skin-text-muted uppercase tracking-wider mb-2">Duración (segundos)</label>
-                                    <input
-                                        type="number"
-                                        min="10"
-                                        max="300"
-                                        value={countdownDuration}
+                                    <select
+                                        value={isNaN(countdownDuration) ? 60 : countdownDuration}
                                         onChange={(e) => setCountdownDuration(parseInt(e.target.value))}
                                         disabled={status !== "IDLE"}
-                                        className="w-full bg-skin-panel border border-skin-border rounded-xl px-4 py-2 text-skin-text-base focus:border-skin-accent outline-none font-mono text-center"
-                                    />
+                                        className="w-full bg-skin-panel border border-skin-border rounded-xl px-4 py-2 text-skin-text-base focus:border-skin-accent outline-none font-mono text-center appearance-none cursor-pointer hover:bg-skin-panel/80 transition-colors"
+                                    >
+                                        {[10, 20, 30, 40, 50, 60].map(val => (
+                                            <option key={val} value={val}>{val} segundos</option>
+                                        ))}
+                                    </select>
                                 </div>
                             )}
 
@@ -658,8 +689,11 @@ const RafflePage = () => {
                                     min="1"
                                     max="10"
                                     step="1"
-                                    value={subMultiplier}
-                                    onChange={(e) => setSubMultiplier(parseInt(e.target.value))}
+                                    value={isNaN(subMultiplier) ? 1 : subMultiplier}
+                                    onChange={(e) => {
+                                        const val = parseInt(e.target.value);
+                                        setSubMultiplier(isNaN(val) ? 1 : val);
+                                    }}
                                     disabled={status !== "IDLE"}
                                     className="w-full h-1 bg-skin-panel rounded-lg appearance-none cursor-pointer accent-skin-success"
                                 />
@@ -705,7 +739,7 @@ const RafflePage = () => {
                                 <span className="text-skin-text-muted">Participantes:</span>
                                 <span className="text-xl font-mono font-bold text-skin-text-base">{displayedParticipants.length}</span>
                             </div>
-                            {participants.length > 0 && status === "IDLE" && (
+                            {participants.length > 0 && (status === "IDLE" || status === "OPEN") && (
                                 <button 
                                     onClick={handleClearParticipants}
                                     className="px-3 py-2 bg-skin-danger hover:bg-red-600 text-white rounded-lg transition-colors flex items-center gap-2 shadow-lg shadow-red-900/20"
@@ -739,7 +773,7 @@ const RafflePage = () => {
                                                     {p.username}
                                                 </span>
                                             </div>
-                                            {status === "IDLE" && (
+                                            {(status === "IDLE" || status === "OPEN") && (
                                                 <button
                                                     onClick={() => handleRemoveParticipant(p.username)}
                                                     className="p-1.5 bg-skin-danger/10 text-skin-danger hover:bg-skin-danger hover:text-white rounded-md transition-all"
@@ -809,11 +843,13 @@ const RafflePage = () => {
                                     ) : (
                                         <button
                                             onClick={closeEntriesAndSpin}
-                                            disabled={participants.length === 0}
+                                            disabled={participants.filter(p => !pastWinners.has(p)).length === 0}
                                             className="flex-1 py-4 bg-skin-secondary hover:bg-skin-secondary/80 text-skin-text-base font-black uppercase text-xl tracking-widest rounded-xl transition-all shadow-lg shadow-skin-secondary/20 transform hover:-translate-y-1 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed items-center justify-center gap-2 flex animate-pulse"
                                         >
                                             <Play size={24} className="text-skin-base" fill="currentColor" />
-                                            {status === "OPEN" ? "¡GIRAR RULETA!" : "Sorteo en Progreso..."}
+                                            {status === "OPEN" 
+                                                ? `¡GIRAR RULETA! (${participants.filter(p => !pastWinners.has(p)).length})` 
+                                                : "Sorteo en Progreso..."}
                                         </button>
                                     )}
                                 </>
@@ -876,6 +912,35 @@ const RafflePage = () => {
                              >
                                Finalizar
                              </button>
+                        </div>
+                     </div>
+                </div>
+            )}
+
+            {/* Loss / Timeout Overlay */}
+            {status === "LOSS" && (
+                <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+                     <div className="bg-skin-base-secondary p-8 rounded-2xl border border-skin-danger/30 max-w-md w-full text-center shadow-2xl shadow-skin-danger/10">
+                        <Clock size={48} className="mx-auto text-skin-danger mb-4 animate-pulse" />
+                        <h3 className="text-3xl font-black text-skin-text-base mb-2 uppercase italic">¡Tiempo Agotado!</h3>
+                        <div className="text-xl text-skin-text-muted mb-8">
+                            <span className="text-skin-danger font-bold text-2xl">@{winner}</span> perdió su oportunidad.
+                        </div>
+                        
+                        <div className="flex gap-4">
+                            <button
+                               onClick={handleContinueRaffle}
+                               className="flex-1 bg-skin-secondary hover:bg-skin-secondary/80 text-skin-base font-bold py-4 rounded-xl transition-all uppercase tracking-widest"
+                            >
+                                <RefreshCw size={20} className="inline mr-2 mb-1" />
+                                Sortear Otro
+                            </button>
+                            <button
+                               onClick={handleFinishRaffle}
+                               className="px-6 bg-skin-base hover:bg-skin-panel text-skin-text-muted font-bold rounded-xl transition-all border border-skin-border"
+                            >
+                                Finalizar
+                            </button>
                         </div>
                      </div>
                 </div>

@@ -20,7 +20,7 @@ class PublicRafflesController < ApplicationController
       created_at: raffle.created_at,
       participants: raffle.participants,
       winners: winners,
-      latest_winner: latest_winner ? { username: latest_winner.username, status: latest_winner.status } : null,
+      latest_winner: latest_winner ? { username: latest_winner.username, status: latest_winner.status, claimed_at: latest_winner.claimed_at } : nil,
       host: {
         username: raffle.user.username,
         image: raffle.user.image

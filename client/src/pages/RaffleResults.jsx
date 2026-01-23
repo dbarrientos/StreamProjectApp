@@ -54,6 +54,11 @@ const RaffleResults = () => {
         };
 
         fetchResults();
+        
+        // Polling interval to auto-update results
+        const interval = setInterval(fetchResults, 5000);
+        
+        return () => clearInterval(interval);
     }, [public_id]);
 
     const handleCopyLink = () => {
@@ -63,29 +68,29 @@ const RaffleResults = () => {
     };
 
     if (loading) return (
-        <div className="min-h-screen bg-[#09090b] flex items-center justify-center text-white">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
+        <div className="min-h-screen bg-skin-base flex items-center justify-center text-skin-text-base">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-skin-accent"></div>
         </div>
     );
 
     if (error) return (
-        <div className="min-h-screen bg-[#09090b] flex items-center justify-center text-red-500 font-bold text-xl">
+        <div className="min-h-screen bg-skin-base flex items-center justify-center text-red-500 font-bold text-xl">
             {error}
         </div>
     );
 
     return (
-        <div className="min-h-screen bg-[#09090b] text-white flex flex-col items-center justify-center p-4 relative overflow-hidden font-sans selection:bg-purple-500/30">
+        <div className="min-h-screen bg-skin-base text-skin-text-base flex flex-col items-center justify-center p-4 relative overflow-hidden font-sans selection:bg-skin-accent/30">
             
             {/* Ambient Background */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] bg-[#00f3ff]/10 rounded-full blur-[120px] animate-pulse"></div>
-                <div className="absolute top-[20%] -right-[10%] w-[40%] h-[40%] bg-[#ff00ff]/10 rounded-full blur-[100px]"></div>
-                <div className="absolute -bottom-[10%] left-[20%] w-[30%] h-[30%] bg-[#ccff00]/5 rounded-full blur-[80px]"></div>
+                <div className="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] bg-skin-accent/10 rounded-full blur-[120px] animate-pulse"></div>
+                <div className="absolute top-[20%] -right-[10%] w-[40%] h-[40%] bg-skin-secondary/10 rounded-full blur-[100px]"></div>
+                <div className="absolute -bottom-[10%] left-[20%] w-[30%] h-[30%] bg-skin-success/5 rounded-full blur-[80px]"></div>
                 
                 {/* Sublimated Trophies */}
-                <Trophy strokeWidth={0.5} className="absolute top-10 -left-10 text-[#00f3ff]/5 w-96 h-96 -rotate-[15deg]" />
-                <Trophy strokeWidth={0.5} className="absolute bottom-0 -right-20 text-[#ff00ff]/5 w-[500px] h-[500px] rotate-[15deg]" />
+                <Trophy strokeWidth={0.5} className="absolute top-10 -left-10 text-skin-accent/5 w-96 h-96 -rotate-[15deg] blur-sm" />
+                <Trophy strokeWidth={0.5} className="absolute bottom-0 -right-20 text-skin-secondary/5 w-[500px] h-[500px] rotate-[15deg] blur-sm" />
             </div>
 
             {/* Main Content Container */}
@@ -97,28 +102,28 @@ const RaffleResults = () => {
                         <div className="flex flex-col items-center gap-4 mb-8">
                             {raffle.host.image && (
                                 <div className="relative group">
-                                    <div className="absolute -inset-0.5 bg-gradient-to-br from-[#00f3ff] to-[#ff00ff] rounded-full opacity-75 blur group-hover:opacity-100 transition duration-500"></div>
+                                    <div className="absolute -inset-0.5 bg-gradient-to-br from-skin-accent to-skin-secondary rounded-full opacity-75 blur group-hover:opacity-100 transition duration-500"></div>
                                     <img 
                                         src={raffle.host.image} 
                                         alt={raffle.host.username} 
-                                        className="relative w-24 h-24 rounded-full border-4 border-[#0a0a1a] shadow-2xl" 
+                                        className="relative w-24 h-24 rounded-full border-4 border-skin-base shadow-2xl" 
                                     />
                                 </div>
                             )}
                             <div className="flex flex-col items-center gap-1">
-                                <span className="text-[#00f3ff] text-[10px] font-bold uppercase tracking-widest">Organizado por</span>
-                                <span className="text-xl font-bold text-white tracking-wide">@{raffle.host.username}</span>
+                                <span className="text-skin-accent text-[10px] font-bold uppercase tracking-widest">Organizado por</span>
+                                <span className="text-xl font-bold text-skin-text-base tracking-wide">@{raffle.host.username}</span>
                             </div>
                         </div>
                     )}
                     
-                    <h1 className="text-5xl md:text-7xl font-black text-white italic tracking-tighter mb-4 drop-shadow-[0_0_5px_rgba(255,0,255,0.8)] leading-tight glitch-text" data-text={raffle.title}>
+                    <h1 className="text-5xl md:text-7xl text-skin-text-base theme-title mb-4 drop-shadow-[0_0_5px_rgba(0,243,255,0.5)] leading-tight glitch-text" data-text={raffle.title}>
                         {raffle.title}
                     </h1>
                     
-                    <div className="flex items-center justify-center gap-6 text-slate-400 text-sm font-medium">
+                    <div className="flex items-center justify-center gap-6 text-skin-text-muted text-sm font-medium">
                         <div className="flex items-center gap-2">
-                            <Calendar size={16} className="text-[#00f3ff]" />
+                            <Calendar size={16} className="text-skin-accent" />
                             {new Date(raffle.created_at).toLocaleDateString()}
                         </div>
                     </div>
@@ -127,35 +132,35 @@ const RaffleResults = () => {
                 {/* Winners List */}
                 <div className="flex flex-col gap-4 mb-12 w-full max-w-2xl mx-auto">
                     {raffle.winners.length === 0 ? (
-                        <div className="text-slate-500 italic py-12 text-lg border-2 border-dashed border-slate-800 rounded-2xl w-full text-center">
+                        <div className="text-skin-text-muted italic py-12 text-lg border-2 border-dashed border-skin-border rounded-2xl w-full text-center">
                             No se registraron ganadores en este evento.
                         </div>
                     ) : (
                         raffle.winners.map((winner, idx) => (
                             <div key={idx} className="group relative w-full perspective-1000">
                                 {/* Glow Effect */}
-                                <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00f3ff] via-[#ff00ff] to-[#ccff00] rounded-xl opacity-0 blur group-hover:opacity-100 transition duration-500"></div>
+                                <div className="absolute -inset-0.5 bg-gradient-to-r from-skin-accent via-skin-secondary to-skin-success rounded-xl opacity-0 blur group-hover:opacity-100 transition duration-500"></div>
                                 
-                                <div className="relative bg-[#0a0a1a] border border-[#ff00ff]/20 rounded-xl p-4 flex items-center justify-between shadow-lg transform transition-all duration-300 hover:-translate-y-1 hover:bg-white/5">
+                                <div className="relative bg-skin-base border border-skin-border rounded-xl p-4 flex items-center justify-between shadow-lg transform transition-all duration-300 hover:-translate-y-1 hover:bg-skin-border/10">
                                     
                                     {/* Left: Number */}
-                                    <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[#0a0a1a] border border-[#00f3ff]/50 text-[#00f3ff] font-bold text-xl shrink-0">
+                                    <div className="flex items-center justify-center w-12 h-12 rounded-full bg-skin-base border border-skin-accent/50 text-skin-accent font-bold text-xl shrink-0">
                                         #{idx + 1}
                                     </div>
 
                                     {/* Center: Info */}
                                     <div className="flex-1 flex flex-col items-center justify-center px-4">
-                                        <div className="text-2xl font-bold text-white group-hover:text-[#ccff00] transition-colors tracking-wide">
+                                        <div className="text-2xl font-bold text-skin-text-base group-hover:text-skin-success transition-colors tracking-wide">
                                             {winner.username}
                                         </div>
-                                        <div className="flex items-center gap-1.5 text-[#ccff00] text-[10px] uppercase font-bold tracking-wider mt-0.5">
+                                        <div className="flex items-center gap-1.5 text-skin-success text-[10px] uppercase font-bold tracking-wider mt-0.5">
                                             <Check size={10} strokeWidth={4} />
                                             Ganador Verificado
                                         </div>
                                     </div>
 
                                     {/* Right: Trophy */}
-                                    <div className="w-12 h-12 flex items-center justify-center rounded-full bg-[#ff00ff]/10 border border-[#ff00ff]/30 text-[#ff00ff] shrink-0 group-hover:bg-[#ff00ff] group-hover:text-black transition-colors duration-300">
+                                    <div className="w-12 h-12 flex items-center justify-center rounded-full bg-skin-border/10 border border-skin-border text-skin-secondary shrink-0 group-hover:bg-skin-border/20 group-hover:text-skin-text-base transition-colors duration-300">
                                         <Trophy size={20} />
                                     </div>
 
@@ -169,15 +174,15 @@ const RaffleResults = () => {
                 <div className="flex flex-col items-center gap-8 pb-12">
                      <button 
                         onClick={handleCopyLink}
-                        className="flex items-center gap-2 px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full text-sm font-medium transition-all hover:scale-105 active:scale-95 group"
+                        className="flex items-center gap-2 px-6 py-3 bg-skin-border/20 hover:bg-skin-border/30 border border-skin-border rounded-full text-sm font-medium transition-all hover:scale-105 active:scale-95 group"
                     >
-                        {copied ? <Check size={18} className="text-green-400" /> : <Copy size={18} className="text-slate-400 group-hover:text-white" />}
-                        <span className={copied ? "text-green-400" : "text-slate-300 group-hover:text-white"}>
+                        {copied ? <Check size={18} className="text-green-400" /> : <Copy size={18} className="text-skin-text-muted group-hover:text-skin-text-base" />}
+                        <span className={copied ? "text-green-400" : "text-skin-text-muted group-hover:text-skin-text-base"}>
                             {copied ? 'Enlace Copiado' : 'Compartir Resultado'}
                         </span>
                     </button>
 
-                    <div className="text-slate-600 text-xs font-medium uppercase tracking-widest opacity-50">
+                    <div className="text-skin-text-muted text-xs font-medium uppercase tracking-widest opacity-50">
                         {import.meta.env.VITE_APP_NAME || 'Twitch Raffle App'} • {new Date().getFullYear()}
                     </div>
                 </div>

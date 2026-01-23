@@ -16,11 +16,16 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
+import { ThemeProvider } from './context/ThemeContext'; // Import ThemeProvider
+
+// ...
+
 function App() {
   return (
     <Router>
-      <AuthProvider>
-        <Routes>
+      <ThemeProvider>
+        <AuthProvider>
+          <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
           <Route 
@@ -50,7 +55,8 @@ function App() {
            <Route path="/raffle-view/:id" element={<RaffleView />} />
            <Route path="/raffle-results/:public_id" element={<RaffleResults />} />
         </Routes>
-      </AuthProvider>
+        </AuthProvider>
+      </ThemeProvider>
     </Router>
   );
 }

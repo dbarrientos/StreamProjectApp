@@ -49,7 +49,7 @@ class RafflesController < ApplicationController
   private
 
   def raffle_params
-    params.require(:raffle).permit(:title, participants: [])
+    params.require(:raffle).permit(:title, :status, participants: [])
   end
 
   def winner_params

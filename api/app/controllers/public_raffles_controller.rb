@@ -12,11 +12,15 @@ class PublicRafflesController < ApplicationController
         return
     end
     winners = raffle.winners.where(status: 'won').select(:username, :status, :claimed_at)
+    latest_winner = raffle.winners.order(created_at: :desc).first
     
     render json: {
       title: raffle.title,
+      status: raffle.status,
       created_at: raffle.created_at,
+      participants: raffle.participants,
       winners: winners,
+      latest_winner: latest_winner ? { username: latest_winner.username, status: latest_winner.status } : null,
       host: {
         username: raffle.user.username,
         image: raffle.user.image

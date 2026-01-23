@@ -15,7 +15,7 @@ const WinnerList = ({ winners }) => {
     return (
         <div className="w-full">
             {/* Main Winner (Always Visible) */}
-            <div className="flex items-center gap-3 p-2 rounded-lg bg-black/40 border border-white/5">
+            <div className="flex items-center gap-3 p-2 rounded-lg bg-black/40 border border-skin-border/20">
                 <div className="text-xl">
                     {mainWinner.status === 'won' && '🏆'}
                     {mainWinner.status === 'al_agua' && '💧'}

@@ -79,7 +79,7 @@ const RaffleWheel = ({ participants, spinning, winner, onAnimationFinish }) => {
        {/* Selector Arrows / Highlight */}
        <div className="absolute top-1/2 left-4 -translate-y-1/2 text-yellow-400 text-2xl z-20">▶</div>
        <div className="absolute top-1/2 right-4 -translate-y-1/2 text-yellow-400 text-2xl z-20">◀</div>
-       <div className="absolute top-1/2 left-0 w-full h-16 -translate-y-1/2 bg-white/5 pointer-events-none z-10 border-y border-white/10"></div>
+       <div className="absolute top-1/2 left-0 w-full h-16 -translate-y-1/2 bg-skin-border/5 pointer-events-none z-10 border-y border-skin-border/30"></div>
 
       <div 
         className="wheel-strip flex flex-col items-center"

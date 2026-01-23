@@ -64,8 +64,12 @@ export const getChatters = async () => {
     return response.json();
 };
 
-export const getSubscribers = async () => {
-    const response = await fetch(`${API_URL}/twitch/subscribers`, {
+export const getSubscribers = async (broadcasterId = null) => {
+    let url = `${API_URL}/twitch/subscribers`;
+    if (broadcasterId) {
+        url += `?broadcaster_id=${broadcasterId}`;
+    }
+    const response = await fetch(url, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -76,8 +80,12 @@ export const getSubscribers = async () => {
     return response.json();
 };
 
-export const getFollowers = async () => {
-    const response = await fetch(`${API_URL}/twitch/followers`, {
+export const getFollowers = async (broadcasterId = null) => {
+    let url = `${API_URL}/twitch/followers`;
+    if (broadcasterId) {
+        url += `?broadcaster_id=${broadcasterId}`;
+    }
+    const response = await fetch(url, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',

@@ -5,10 +5,10 @@ class SessionsController < ApplicationController
     
     # In a real production app, return a JWT token here.
     # For this prototype, we redirect with params.
-    redirect_to "http://localhost:5173/auth/callback?uid=#{user.uid}&username=#{user.username}&image=#{user.image}&token=#{user.token}", allow_other_host: true
+    redirect_to "https://localhost:5173/auth/callback?uid=#{user.uid}&username=#{user.username}&image=#{user.image}&token=#{user.token}", allow_other_host: true
   end
 
   def failure
-    redirect_to "http://localhost:5173?error=auth_failed", allow_other_host: true
+    redirect_to "https://localhost:5173?error=auth_failed", allow_other_host: true
   end
 end

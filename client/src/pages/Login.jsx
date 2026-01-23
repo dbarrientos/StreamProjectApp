@@ -1,10 +1,14 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import { Twitch, Zap } from 'lucide-react';
 import Layout from '../components/Layout';
 
 const Login = () => {
   const { login } = useAuth();
+  const { theme } = useTheme();
+  const appName = import.meta.env.VITE_APP_NAME || "TWITCH RAFFLE";
+  const [firstLine, secondLine] = appName.split(" ");
 
   const handleLogin = () => {
     // Generate a secure random state
@@ -13,7 +17,7 @@ const Login = () => {
     
     // Redirect to backend auth endpoint
     // The backend handles the state generation for omniauth
-    window.location.href = 'http://localhost:3000/auth/twitch';
+    window.location.href = 'https://localhost:3000/auth/twitch';
   };
 
   return (
@@ -24,21 +28,44 @@ const Login = () => {
                 
                 {/* Logo / Icon */}
                 <div className="mb-8 relative inline-block">
-                    <div className="absolute inset-0 bg-[#ccff00] blur-2xl opacity-20 animate-pulse"></div>
-                    <div className="relative bg-[#0c0c1e] p-6 rounded-2xl border border-white/10 shadow-2xl skew-y-3 hover:skew-y-0 transition-all duration-500">
-                        <Zap size={64} className="text-[#ccff00]" strokeWidth={1.5} />
+                    <div className="absolute inset-0 bg-skin-success blur-2xl opacity-20 animate-pulse"></div>
+                    <div className="relative bg-skin-base-secondary p-6 rounded-2xl border border-skin-border shadow-2xl skew-y-3 hover:skew-y-0 transition-all duration-500">
+                        <Zap size={64} className="text-skin-success" strokeWidth={1.5} />
                     </div>
                 </div>
 
-                <h1 className="text-5xl md:text-7xl font-black text-white italic tracking-tighter mb-6 leading-tight glitch-text" data-text="TWITCH RAFFLE">
-                    TWITCH<br/>RAFFLE
-                </h1>
+                <div className="text-5xl md:text-7xl text-skin-text-base theme-title mb-6 leading-tight">
+                   {theme === 'cyberpunk' || theme === 'kawaii' || theme === 'mario' ? (
+                       <>
+                           <div className="glitch-text" data-text={firstLine.toUpperCase()}>
+                                {firstLine.toUpperCase()}
+                           </div>
+                           {secondLine && (
+                               <div className="glitch-text" data-text={secondLine.toUpperCase()}>
+                                   {secondLine.toUpperCase()}
+                               </div>
+                           )}
+                       </>
+                   ) : (
+                       <>
+                           <div>
+                                {firstLine.toUpperCase()}
+                           </div>
+                           {secondLine && (
+                               <div>
+                                   {secondLine.toUpperCase()}
+                               </div>
+                           )}
+                       </>
+                   )}
+                </div>
                 
-                <p className="text-slate-400 text-lg mb-10 font-medium">
+                <p className="text-skin-text-muted text-lg mb-10 font-medium max-w-md mx-auto">
                     La plataforma definitiva para tus sorteos.<br/>
-                    <span className="text-[#00f3ff]">Rápido. Épico. Cyberpunk.</span>
+                    <span className="text-skin-accent">Rápido. Épico. Cyberpunk.</span>
                 </p>
 
+                <div className="max-w-md mx-auto">
                 <button 
                   onClick={handleLogin}
                   className="group relative w-full px-8 py-5 bg-[#9146FF] hover:bg-[#7c2cf8] text-white font-bold text-xl uppercase tracking-widest transition-all hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(145,70,255,0.4)] rounded-xl overflow-hidden"
@@ -49,8 +76,9 @@ const Login = () => {
                     <span>Conectar con Twitch</span>
                   </div>
                 </button>
+                </div>
                 
-                <p className="mt-8 text-xs text-slate-500 uppercase tracking-widest">
+                <p className="mt-8 text-xs text-skin-text-muted uppercase tracking-widest">
                     Secure Login via Twitch
                 </p>
             </div>

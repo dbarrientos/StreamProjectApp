@@ -9,13 +9,13 @@ class TwitchController < ApplicationController
 
   def subscribers
     service = TwitchService.new(current_user)
-    subs = service.get_subscribers
+    subs = service.get_subscribers(params[:broadcaster_id])
     render json: { subscribers: subs }
   end
 
   def followers
     service = TwitchService.new(current_user)
-    followers = service.get_followers
+    followers = service.get_followers(params[:broadcaster_id])
     render json: { followers: followers }
   end
 

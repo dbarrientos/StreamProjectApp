@@ -22,9 +22,13 @@ class TwitchService
     end
   end
 
-  def get_subscribers
-    url = "#{BASE_URL}/subscriptions?broadcaster_id=#{@user.uid}&first=100"
+  def get_subscribers(broadcaster_id = nil)
+    target_id = broadcaster_id || @user.uid
+    url = "#{BASE_URL}/subscriptions?broadcaster_id=#{target_id}&first=100"
+    
+    puts "Twitch API Request (Subs): #{url}"
     response = request(:get, url)
+    puts "Twitch API Response Code (Subs): #{response.code}"
     
     if response.is_a?(Net::HTTPSuccess)
       data = JSON.parse(response.body)
@@ -35,16 +39,34 @@ class TwitchService
     end
   end
 
-  def get_followers
-    url = "#{BASE_URL}/channels/followers?broadcaster_id=#{@user.uid}&moderator_id=#{@user.uid}&first=100"
+  def get_followers(broadcaster_id = nil)
+    target_id = broadcaster_id || @user.uid
+    # If checking another channel, we act as moderator
+    # If checking own channel, we act as broadcaster (which is implied mod)
+    
+    url = "#{BASE_URL}/channels/followers?broadcaster_id=#{target_id}&first=100"
+    # Note: moderator_id is required if we want to see private info, but for public follower list, 
+    # broadly speaking just broadcaster_id is enough for public list? 
+    # Actually checking docs: "This endpoint returns a list of users who follow the specified broadcaster."
+    # moderator_id is optional but required to read 'user_id' if scope is specific? 
+    # Actually, let's keep it simple. If we are mod, passing moderator_id might help with rate limits or specific scopes.
+    url += "&moderator_id=#{@user.uid}" if broadcaster_id && broadcaster_id != @user.uid
+    
     puts "Twitch API Request: #{url}"
     response = request(:get, url)
     puts "Twitch API Response Code: #{response.code}"
-    puts "Twitch API Response Body: #{response.body}"
+    # puts "Twitch API Response Body: #{response.body}"
     
     if response.is_a?(Net::HTTPSuccess)
       data = JSON.parse(response.body)
-      data['data'].map { |follower| { username: follower['user_name'], type: 'follower' } }
+      # Map correctly based on API response structure
+      data['data'].map do |follower| 
+        { 
+          username: follower['user_name'], 
+          type: 'follower',
+          followed_at: follower['followed_at']
+        } 
+      end
     else
       Rails.logger.error "Twitch API Error (Followers): #{response.body}"
       []

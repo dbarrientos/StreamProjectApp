@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation, Trans } from 'react-i18next';
 import tmi from "tmi.js";
 import confetti from "canvas-confetti";
 import { useAuth } from "../context/AuthContext";
@@ -22,6 +23,7 @@ import {
 
 const RafflePage = () => {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [channel, setChannel] = useState(user?.username || "");
   const [connected, setConnected] = useState(false);
@@ -174,7 +176,7 @@ const RafflePage = () => {
       clientRef.current = client;
     } catch (e) {
       console.error("Chat connection failed", e);
-      alert("No se pudo conectar al chat. Verifica tu conexión.");
+      alert(t('raffle_form.alerts.chat_error'));
     }
   };
 
@@ -188,7 +190,7 @@ const RafflePage = () => {
 
   // Start Raffle (Create in DB)
   const handleStartRaffle = async () => {
-    if (!raffleTitle.trim()) return alert("¡Debes ponerle un nombre al sorteo!");
+    if (!raffleTitle.trim()) return alert(t('raffle_form.alerts.title_required'));
     
     try {
         const newRaffle = await createRaffle({
@@ -203,13 +205,13 @@ const RafflePage = () => {
         }
     } catch (e) {
         console.error("Error creating raffle", e);
-        alert("Error al iniciar sorteo.");
+        alert(t('raffle_form.alerts.create_error'));
     }
   };
 
   // Close and Spin
   const closeEntriesAndSpin = async () => {
-    if (participants.length === 0) return alert("¡No hay participantes!");
+    if (participants.length === 0) return alert(t('raffle_form.alerts.no_participants'));
 
     // 1. Open Separate Window (Sync for popup blockers)
     if (currentPublicId) {
@@ -219,7 +221,7 @@ const RafflePage = () => {
     // 2. Determine winner from ELIGIBLE participants only
     const eligibleParticipants = participants.filter(p => !pastWinners.has(p));
     
-    if (eligibleParticipants.length === 0) return alert("¡No hay participantes elegibles!");
+    if (eligibleParticipants.length === 0) return alert(t('raffle_form.alerts.no_eligible'));
 
     const randomIndex = Math.floor(Math.random() * eligibleParticipants.length);
     const selectedWinner = eligibleParticipants[randomIndex];
@@ -409,11 +411,12 @@ const RafflePage = () => {
                 const unique = new Set([...prev, ...newNames]);
                 return Array.from(unique);
             });
-            alert(`Importados ${newNames.length} seguidores.`);
+
+            alert(t('raffle_form.alerts.import_followers_success', { count: newNames.length }));
         }
     } catch (e) {
         console.error("Error importing followers", e);
-        alert("Error al importar seguidores.");
+        alert(t('raffle_form.alerts.import_followers_error'));
     } finally {
         setIsImporting(false);
     }
@@ -435,18 +438,19 @@ const RafflePage = () => {
                 const unique = new Set([...prev, ...newNames]);
                 return Array.from(unique);
             });
-            alert(`Importados ${newNames.length} suscriptores.`);
+
+            alert(t('raffle_form.alerts.import_subs_success', { count: newNames.length }));
         }
     } catch (e) {
         console.error("Error importing subscribers", e);
-        alert("Error al importar suscriptores. (Requiere ser el broadcaster)");
+        alert(t('raffle_form.alerts.import_subs_error'));
     } finally {
         setIsImporting(false);
     }
   };
 
   const handleImportChatters = async () => {
-    if (!channel) return alert("Error: No hay canal definido");
+    if (!channel) return alert(t('raffle_form.alerts.import_chat_error'));
     setIsImporting(true);
     try {
         const data = await getChatters();
@@ -456,11 +460,11 @@ const RafflePage = () => {
                 const unique = new Set([...prev, ...newNames]);
                 return Array.from(unique);
             });
-            alert(`Importados ${newNames.length} viewers.`);
+            alert(t('raffle_form.alerts.import_chat_success', { count: newNames.length }));
         }
     } catch (e) {
         console.error("Error importing chatters", e);
-        alert("Error al importar viewers. (Asegúrate de estar en vivo o tener el chat conectado)");
+        alert(t('raffle_form.alerts.import_chat_fail'));
     } finally {
         setIsImporting(false);
     }
@@ -482,7 +486,7 @@ const RafflePage = () => {
   };
 
   const handleClearParticipants = () => {
-      if (window.confirm("¿Estás seguro de que quieres eliminar a TODOS los participantes?")) {
+      if (window.confirm(t('raffle_form.alerts.confirm_clear'))) {
           setParticipants([]);
           setWinner(null);
           setStatus("IDLE");
@@ -507,11 +511,14 @@ const RafflePage = () => {
             {/* Top Bar / Header */}
             <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-8 animate-in fade-in slide-in-from-top-4 duration-700">
                 <div className="text-center md:text-left">
-                    <h1 className="text-5xl md:text-6xl text-skin-text-base theme-title glitch-text mb-2" data-text="NUEVO SORTEO">
-                        NUEVO SORTEO
+                    <h1 className="text-5xl md:text-6xl text-skin-text-base theme-title glitch-text mb-2" data-text={t('raffle_form.title')}>
+                        {t('raffle_form.title')}
                     </h1>
                     <p className="text-skin-text-muted font-medium tracking-wide">
-                        Configura las reglas. <span className="text-skin-accent">Domina el azar.</span>
+                        <Trans 
+                            i18nKey="raffle_form.subtitle"
+                            components={{ 1: <span className="text-skin-accent"/> }}
+                        />
                     </p>
                 </div>
 
@@ -521,7 +528,7 @@ const RafflePage = () => {
                             onClick={handleFinishRaffle}
                             className="px-6 py-2 bg-skin-danger/10 hover:bg-skin-danger/20 text-skin-danger border border-skin-danger/20 rounded-lg font-bold uppercase tracking-wider text-xs transition-all"
                         >
-                            Cancelar / Salir
+                            {t('raffle_form.cancel')}
                         </button>
                     </div>
                 )}
@@ -539,7 +546,7 @@ const RafflePage = () => {
                             <div className="p-2 bg-skin-secondary/10 rounded-lg text-skin-secondary">
                                 <Users size={20} />
                             </div>
-                            <h2 className="text-xl font-bold text-skin-text-base tracking-tight">Importar</h2>
+                            <h2 className="text-xl font-bold text-skin-text-base tracking-tight">{t('raffle_form.import.title')}</h2>
                         </div>
 
                         <div className="space-y-3 relative z-10">
@@ -547,28 +554,28 @@ const RafflePage = () => {
                                 onClick={handleImportChatters}
                                 disabled={isImporting || status !== "IDLE" || !connected}
                                 className="w-full py-3 bg-skin-panel hover:bg-skin-border border border-skin-border rounded-xl flex items-center justify-center gap-3 transition-all disabled:opacity-50"
-                                title={!connected ? "Conecta el chat primero" : ""}
+                                title={!connected ? t('raffle_form.chat_area.instruction_disconnected') : ""}
                             >
                                 {isImporting ? <Loader2 size={18} className="animate-spin" /> : <MessageSquare size={18} className="text-skin-text-muted" />}
-                                <span className="font-bold text-skin-text-base">Importar Viewers (Chat)</span>
+                                <span className="font-bold text-skin-text-base">{t('raffle_form.import.chat')}</span>
                             </button>
                             <button
                                 onClick={handleImportFollowers}
                                 disabled={isImporting || status !== "IDLE" || !connected}
                                 className="w-full py-3 bg-skin-panel hover:bg-skin-border border border-skin-border rounded-xl flex items-center justify-center gap-3 transition-all disabled:opacity-50"
-                                title={!connected ? "Conecta el chat primero" : ""}
+                                title={!connected ? t('raffle_form.chat_area.instruction_disconnected') : ""}
                             >
                                 {isImporting ? <Loader2 size={18} className="animate-spin" /> : <Users size={18} className="text-skin-text-muted" />}
-                                <span className="font-bold text-skin-text-base">Importar Followers</span>
+                                <span className="font-bold text-skin-text-base">{t('raffle_form.import.followers')}</span>
                             </button>
                             <button
                                 onClick={handleImportSubscribers}
                                 disabled={isImporting || status !== "IDLE" || !connected}
                                 className="w-full py-3 bg-skin-panel hover:bg-skin-border border border-skin-border rounded-xl flex items-center justify-center gap-3 transition-all disabled:opacity-50"
-                                title={!connected ? "Conecta el chat primero" : ""}
+                                title={!connected ? t('raffle_form.chat_area.instruction_disconnected') : ""}
                             >
                                {isImporting ? <Loader2 size={18} className="animate-spin" /> : <Star size={18} className="text-skin-text-muted" />}
-                                <span className="font-bold text-skin-text-base">Importar Subs</span>
+                                <span className="font-bold text-skin-text-base">{t('raffle_form.import.subs')}</span>
                             </button>
                         </div>
                     </div>
@@ -581,23 +588,23 @@ const RafflePage = () => {
                             <div className="p-2 bg-skin-secondary/10 rounded-lg text-skin-secondary">
                                 <Type size={20} />
                             </div>
-                            <h2 className="text-xl font-bold text-skin-text-base tracking-tight">Información Básica</h2>
+                            <h2 className="text-xl font-bold text-skin-text-base tracking-tight">{t('raffle_form.basic_info.title')}</h2>
                         </div>
 
                         <div className="space-y-4 relative z-10">
                             <div>
-                                <label className="block text-xs font-bold text-skin-text-muted uppercase tracking-wider mb-2">Título del Sorteo</label>
+                                <label className="block text-xs font-bold text-skin-text-muted uppercase tracking-wider mb-2">{t('raffle_form.basic_info.raffle_title')}</label>
                                 <input
                                     type="text"
                                     value={raffleTitle}
                                     onChange={(e) => setRaffleTitle(e.target.value)}
                                     disabled={status !== "IDLE"}
-                                    placeholder="Ej: Sorteo Especial 1K..."
+                                    placeholder={t('raffle_form.basic_info.raffle_title_placeholder')}
                                     className="w-full bg-skin-panel border border-skin-border rounded-xl px-4 py-3 text-skin-text-base placeholder-skin-text-muted focus:border-skin-secondary focus:ring-1 focus:ring-skin-secondary transition-all outline-none"
                                 />
                             </div>
                             <div>
-                                <label className="block text-xs font-bold text-skin-text-muted uppercase tracking-wider mb-2">Keyword (Comando)</label>
+                                <label className="block text-xs font-bold text-skin-text-muted uppercase tracking-wider mb-2">{t('raffle_form.basic_info.keyword')}</label>
                                 <div className="relative">
                                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-skin-text-muted font-bold">!</span>
                                     <input
@@ -605,20 +612,20 @@ const RafflePage = () => {
                                         value={keyword}
                                         onChange={(e) => setKeyword(e.target.value)}
                                         disabled={status !== "IDLE"}
-                                        placeholder="participo"
+                                        placeholder={t('raffle_form.basic_info.keyword_placeholder')}
                                         className="w-full bg-skin-panel border border-skin-border rounded-xl pl-8 pr-4 py-3 text-skin-text-base placeholder-skin-text-muted focus:border-skin-secondary focus:ring-1 focus:ring-skin-secondary transition-all outline-none font-mono"
                                     />
                                 </div>
                             </div>
                             
                             <div>
-                                <label className="block text-xs font-bold text-skin-text-muted uppercase tracking-wider mb-2">Agregar Manualmente</label>
+                                <label className="block text-xs font-bold text-skin-text-muted uppercase tracking-wider mb-2">{t('raffle_form.basic_info.manual_add')}</label>
                                 <div className="flex flex-col gap-2">
                                     <textarea
                                         value={manualInput}
                                         onChange={(e) => setManualInput(e.target.value)}
                                         disabled={status !== "IDLE" && status !== "OPEN"}
-                                        placeholder="Nombres separados por coma o enter..."
+                                        placeholder={t('raffle_form.basic_info.manual_add_placeholder')}
                                         className="w-full bg-skin-panel border border-skin-border rounded-xl px-4 py-3 text-skin-text-base placeholder-skin-text-muted focus:border-skin-secondary focus:ring-1 focus:ring-skin-secondary transition-all outline-none min-h-[80px]"
                                     />
                                     <button
@@ -626,7 +633,7 @@ const RafflePage = () => {
                                         disabled={!manualInput.trim() || (status !== "IDLE" && status !== "OPEN")}
                                         className="px-4 py-2 bg-skin-base-secondary hover:bg-skin-border border border-skin-border rounded-lg text-xs font-bold uppercase tracking-wider transition-colors disabled:opacity-50"
                                     >
-                                        Agregar Lista
+                                        {t('raffle_form.basic_info.add_list')}
                                     </button>
                                 </div>
                             </div>
@@ -641,7 +648,7 @@ const RafflePage = () => {
                             <div className="p-2 bg-skin-success/10 rounded-lg text-skin-success">
                                 <Settings size={20} />
                             </div>
-                            <h2 className="text-xl font-bold text-skin-text-base tracking-tight">Opciones Avanzadas</h2>
+                            <h2 className="text-xl font-bold text-skin-text-base tracking-tight">{t('raffle_form.advanced_options.title')}</h2>
                         </div>
                         
                         <div className="space-y-6 relative z-10">
@@ -652,8 +659,8 @@ const RafflePage = () => {
                                         <Timer size={16} />
                                     </div>
                                     <div>
-                                        <div className="text-sm font-bold text-skin-text-base">Cuenta Regresiva</div>
-                                        <div className="text-xs text-skin-text-muted">Tiempo límite para unirse</div>
+                                        <div className="text-sm font-bold text-skin-text-base">{t('raffle_form.advanced_options.countdown.label')}</div>
+                                        <div className="text-xs text-skin-text-muted">{t('raffle_form.advanced_options.countdown.desc')}</div>
                                     </div>
                                 </div>
                                 <label className="relative inline-flex items-center cursor-pointer">
@@ -664,7 +671,7 @@ const RafflePage = () => {
 
                             {useCountdown && (
                                 <div className="ml-2 pl-4 border-l-2 border-skin-accent/20">
-                                    <label className="block text-xs font-bold text-skin-text-muted uppercase tracking-wider mb-2">Duración (segundos)</label>
+                                    <label className="block text-xs font-bold text-skin-text-muted uppercase tracking-wider mb-2">{t('raffle_form.advanced_options.countdown.duration')}</label>
                                     <select
                                         value={isNaN(countdownDuration) ? 60 : countdownDuration}
                                         onChange={(e) => setCountdownDuration(parseInt(e.target.value))}
@@ -672,7 +679,7 @@ const RafflePage = () => {
                                         className="w-full bg-skin-panel border border-skin-border rounded-xl px-4 py-2 text-skin-text-base focus:border-skin-accent outline-none font-mono text-center appearance-none cursor-pointer hover:bg-skin-panel/80 transition-colors"
                                     >
                                         {[10, 20, 30, 40, 50, 60].map(val => (
-                                            <option key={val} value={val}>{val} segundos</option>
+                                            <option key={val} value={val}>{val} s</option>
                                         ))}
                                     </select>
                                 </div>
@@ -681,7 +688,7 @@ const RafflePage = () => {
                             {/* Subscriber Luck */}
                             <div className="space-y-3">
                                 <div className="flex items-center justify-between">
-                                    <label className="text-xs font-bold text-skin-text-muted uppercase tracking-wider">Suerte de Suscriptor</label>
+                                    <label className="text-xs font-bold text-skin-text-muted uppercase tracking-wider">{t('raffle_form.advanced_options.subscriber_luck.label')}</label>
                                     <span className="text-xs font-mono text-skin-success bg-skin-success/10 px-2 py-1 rounded">x{subMultiplier}</span>
                                 </div>
                                 <input
@@ -706,8 +713,8 @@ const RafflePage = () => {
                                         <Lock size={16} />
                                     </div>
                                     <div>
-                                        <div className="text-sm font-bold text-skin-text-base">Solo Suscriptores</div>
-                                        <div className="text-xs text-skin-text-muted">Exclusivo para subs</div>
+                                        <div className="text-sm font-bold text-skin-text-base">{t('raffle_form.advanced_options.subscriber_only.label')}</div>
+                                        <div className="text-xs text-skin-text-muted">{t('raffle_form.advanced_options.subscriber_only.desc')}</div>
                                     </div>
                                 </div>
                                 <label className="relative inline-flex items-center cursor-pointer">
@@ -727,26 +734,26 @@ const RafflePage = () => {
                         <div className="flex items-center gap-4">
                             <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border ${connected ? 'bg-skin-accent/10 text-skin-accent border-skin-accent/20' : 'bg-skin-danger/10 text-skin-danger border-skin-danger/20'}`}>
                                 <div className={`w-2 h-2 rounded-full ${connected ? 'bg-skin-accent animate-pulse' : 'bg-skin-danger'}`}></div>
-                                {connected ? 'Conectado al Chat' : 'Desconectado'}
+                                {connected ? t('raffle_form.status.connected') : t('raffle_form.status.disconnected')}
                             </div>
                             <div className="h-4 w-px bg-skin-border"></div>
                              <div className="text-skin-text-muted text-sm">
-                                Canal: <span className="text-skin-text-base font-bold">{user?.username}</span>
+                                {t('raffle_form.status.channel')}: <span className="text-skin-text-base font-bold">{user?.username}</span>
                             </div>
                         </div>
                         <div className="flex items-center gap-4 text-sm">
                             <div className="flex items-center gap-2">
-                                <span className="text-skin-text-muted">Participantes:</span>
+                                <span className="text-skin-text-muted">{t('raffle_form.status.participants')}:</span>
                                 <span className="text-xl font-mono font-bold text-skin-text-base">{displayedParticipants.length}</span>
                             </div>
                             {participants.length > 0 && (status === "IDLE" || status === "OPEN") && (
                                 <button 
                                     onClick={handleClearParticipants}
                                     className="px-3 py-2 bg-skin-danger hover:bg-red-600 text-white rounded-lg transition-colors flex items-center gap-2 shadow-lg shadow-red-900/20"
-                                    title="Eliminar todos los participantes"
+                                    title={t('raffle_form.status.clear_all')}
                                 >
                                     <Trash2 size={16} />
-                                    <span className="text-xs font-bold uppercase">Borrar Todos</span>
+                                    <span className="text-xs font-bold uppercase">{t('raffle_form.status.clear_all')}</span>
                                 </button>
                             )}
                         </div>
@@ -760,8 +767,8 @@ const RafflePage = () => {
                             {displayedParticipants.length === 0 ? (
                                 <div className="h-full flex flex-col items-center justify-center text-skin-text-muted opacity-50">
                                     <MessageSquare size={48} className="mb-4" />
-                                    <p className="text-lg font-medium">Esperando participantes...</p>
-                                    <p className="text-xs uppercase tracking-widest mt-2">{connected ? `Escribe !${keyword} en el chat` : 'Conecta el chat para comenzar'}</p>
+                                    <p className="text-lg font-medium">{t('raffle_form.chat_area.waiting')}</p>
+                                    <p className="text-xs uppercase tracking-widest mt-2">{connected ? t('raffle_form.chat_area.instruction_connected', { keyword }) : t('raffle_form.chat_area.instruction_disconnected')}</p>
                                 </div>
                             ) : (
                                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 content-start h-full overflow-y-auto pr-2 custom-scrollbar">
@@ -789,7 +796,9 @@ const RafflePage = () => {
                         </div>
                     </div>
 
-                    {/* Action Bar */}
+
+            
+                     {/* Action Bar */}
                     <div className="bg-skin-base-secondary p-6 rounded-b-2xl border-x border-b border-skin-border shadow-2xl relative z-20 space-y-4">
                          
                          {/* OBS Link Section */}
@@ -804,10 +813,10 @@ const RafflePage = () => {
                                 <button 
                                     onClick={() => {
                                         navigator.clipboard.writeText(`${window.location.origin}/raffle/${currentPublicId}`);
-                                        alert("Link copiado al portapapeles! Úsalo como 'Browser Source' en OBS.");
+                                        alert(t('raffle_form.actions.copied'));
                                     }}
                                     className="p-1.5 text-skin-text-base hover:text-skin-accent hover:bg-skin-accent/10 rounded transition-colors"
-                                    title="Copiar Link para OBS"
+                                    title={t('raffle_form.actions.obs_link')}
                                 >
                                     <Copy size={16} />
                                 </button>
@@ -820,7 +829,7 @@ const RafflePage = () => {
                                     onClick={connectToChat}
                                     className="flex-1 py-4 bg-skin-accent hover:bg-skin-accent-hover text-black font-black uppercase text-xl tracking-widest rounded-xl transition-all shadow-[0_0_20px_rgba(var(--color-accent),0.3)] hover:shadow-[0_0_30px_rgba(var(--color-accent),0.5)] transform hover:-translate-y-1 active:translate-y-0"
                                 >
-                                    Conectar Chat
+                                    {t('raffle_form.actions.connect')}
                                 </button>
                             ) : (
                                 <>
@@ -830,14 +839,14 @@ const RafflePage = () => {
                                                 onClick={disconnectChat}
                                                 className="px-6 py-4 bg-skin-danger/10 hover:bg-skin-danger/20 text-skin-danger font-bold uppercase tracking-wider rounded-xl border border-skin-danger/20 hover:border-skin-danger/50 transition-all"
                                             >
-                                                Desconectar
+                                                {t('raffle_form.actions.disconnect')}
                                             </button>
                                             <button
                                                 onClick={handleStartRaffle}
                                                 className="flex-1 py-4 bg-skin-success hover:bg-skin-success/80 text-black font-black uppercase text-xl tracking-widest rounded-xl transition-all shadow-lg shadow-skin-success/20 transform hover:-translate-y-1 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none items-center justify-center gap-2 flex"
                                             >
                                                 <Play size={24} fill="black" />
-                                                Iniciar Sorteo
+                                                {t('raffle_form.actions.start')}
                                             </button>
                                         </>
                                     ) : (
@@ -848,7 +857,7 @@ const RafflePage = () => {
                                         >
                                             <Play size={24} className="text-skin-base" fill="currentColor" />
                                             {status === "OPEN" 
-                                                ? `¡GIRAR RULETA! (${participants.filter(p => !pastWinners.has(p)).length})` 
+                                                ? `${t('raffle_form.actions.close')} (${participants.filter(p => !pastWinners.has(p)).length})` 
                                                 : "Sorteo en Progreso..."}
                                         </button>
                                     )}
@@ -866,7 +875,7 @@ const RafflePage = () => {
                      <div className="bg-skin-base-secondary p-8 rounded-2xl border border-skin-border max-w-md w-full text-center shadow-2xl relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-full h-1 bg-gradient-to-r from-skin-accent via-skin-secondary to-skin-success"></div>
                         
-                        <h3 className="text-2xl font-bold text-skin-text-base mb-2">🎉 ¡Tenemos Ganador!</h3>
+                        <h3 className="text-2xl font-bold text-skin-text-base mb-2">{t('raffle_form.overlays.review.title')}</h3>
                         <div className="text-4xl font-black text-skin-success my-6 font-mono tracking-wider">
                             {winner}
                         </div>
@@ -876,13 +885,13 @@ const RafflePage = () => {
                                onClick={confirmWinner}
                                className="flex-1 bg-green-500 hover:bg-green-600 text-black font-bold py-3 rounded-xl transition-all"
                              >
-                               Confirmar
+                               {t('raffle_form.overlays.review.confirm')}
                              </button>
                              <button
                                onClick={() => handleAlAgua(winner)}
                                className="flex-1 bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 rounded-xl transition-all"
                              >
-                               Al Agua
+                               {t('raffle_form.overlays.review.al_agua')}
                              </button>
                         </div>
                      </div>
@@ -894,9 +903,13 @@ const RafflePage = () => {
                 <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
                      <div className="bg-skin-base-secondary p-8 rounded-2xl border border-skin-success/30 max-w-md w-full text-center shadow-2xl shadow-skin-success/10">
                         <Star size={48} className="mx-auto text-skin-success mb-4 animate-bounce" fill="currentColor" />
-                        <h3 className="text-3xl font-black text-skin-text-base mb-2 uppercase italic">¡Felicidades!</h3>
+                        <h3 className="text-3xl font-black text-skin-text-base mb-2 uppercase italic">{t('raffle_form.overlays.win.title')}</h3>
                         <div className="text-xl text-skin-text-muted mb-8">
-                            <span className="text-skin-success font-bold text-2xl">@{winner}</span> ha ganado el sorteo.
+                            <Trans 
+                                i18nKey="raffle_form.overlays.win.desc"
+                                values={{ winner }}
+                                components={{ 1: <span className="text-skin-success font-bold text-2xl"/> }}
+                            />
                         </div>
                         
                         <div className="flex gap-4">
@@ -904,13 +917,13 @@ const RafflePage = () => {
                                onClick={handleContinueRaffle}
                                className="flex-1 bg-skin-secondary hover:bg-skin-secondary/80 text-skin-base font-bold py-4 rounded-xl transition-all uppercase tracking-widest"
                              >
-                               Sortear Otro
+                               {t('raffle_form.overlays.win.spin_another')}
                              </button>
                             <button
                                onClick={handleFinishRaffle}
                                className="flex-1 bg-skin-success hover:bg-skin-success/80 text-black font-bold py-4 rounded-xl transition-all uppercase tracking-widest"
                              >
-                               Finalizar
+                               {t('raffle_form.overlays.win.finish')}
                              </button>
                         </div>
                      </div>
@@ -922,9 +935,13 @@ const RafflePage = () => {
                 <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
                      <div className="bg-skin-base-secondary p-8 rounded-2xl border border-skin-danger/30 max-w-md w-full text-center shadow-2xl shadow-skin-danger/10">
                         <Clock size={48} className="mx-auto text-skin-danger mb-4 animate-pulse" />
-                        <h3 className="text-3xl font-black text-skin-text-base mb-2 uppercase italic">¡Tiempo Agotado!</h3>
+                        <h3 className="text-3xl font-black text-skin-text-base mb-2 uppercase italic">{t('raffle_form.overlays.loss.title')}</h3>
                         <div className="text-xl text-skin-text-muted mb-8">
-                            <span className="text-skin-danger font-bold text-2xl">@{winner}</span> perdió su oportunidad.
+                             <Trans 
+                                i18nKey="raffle_form.overlays.loss.desc"
+                                values={{ winner }}
+                                components={{ 1: <span className="text-skin-danger font-bold text-2xl"/> }}
+                            />
                         </div>
                         
                         <div className="flex gap-4">
@@ -933,13 +950,13 @@ const RafflePage = () => {
                                className="flex-1 bg-skin-secondary hover:bg-skin-secondary/80 text-skin-base font-bold py-4 rounded-xl transition-all uppercase tracking-widest"
                             >
                                 <RefreshCw size={20} className="inline mr-2 mb-1" />
-                                Sortear Otro
+                                {t('raffle_form.overlays.win.spin_another')}
                             </button>
                             <button
                                onClick={handleFinishRaffle}
                                className="px-6 bg-skin-base hover:bg-skin-panel text-skin-text-muted font-bold rounded-xl transition-all border border-skin-border"
                             >
-                                Finalizar
+                                {t('raffle_form.overlays.win.finish')}
                             </button>
                         </div>
                      </div>

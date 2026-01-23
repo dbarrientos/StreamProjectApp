@@ -2,7 +2,7 @@ class RafflesController < ApplicationController
   before_action :authenticate_user!
   
   def index
-    render json: current_user.raffles.order(created_at: :desc), include: :winners
+    render json: current_user.raffles.includes(:winners).order(created_at: :desc), include: :winners
   end
 
   def create

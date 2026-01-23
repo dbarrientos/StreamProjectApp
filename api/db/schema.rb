@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_01_22_224758) do
+ActiveRecord::Schema[7.1].define(version: 2026_01_23_224910) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -35,6 +35,8 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_22_224758) do
     t.string "token"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "theme", default: "dark"
+    t.string "language", default: "es"
   end
 
   create_table "winners", force: :cascade do |t|

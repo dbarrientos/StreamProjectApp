@@ -107,3 +107,15 @@ export const getModeratedChannels = async () => {
     if (!response.ok) throw new Error('Error fetching moderated channels');
     return response.json();
 };
+export const updateUser = async (id, userData) => {
+  const response = await fetch(`${API_URL}/users/${id}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+    body: JSON.stringify({ user: userData }),
+  });
+  if (!response.ok) throw new Error('Error updating user');
+  return response.json();
+};

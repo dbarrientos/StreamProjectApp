@@ -27,8 +27,16 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('twitch_user');
   };
 
+  const updateProfile = (updates) => {
+    setUser(prev => {
+      const newUser = { ...prev, ...updates };
+      localStorage.setItem('twitch_user', JSON.stringify(newUser));
+      return newUser;
+    });
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading }}>
+    <AuthContext.Provider value={{ user, login, logout, updateProfile, loading }}>
       {!loading && children}
     </AuthContext.Provider>
   );

@@ -23,8 +23,8 @@ import { ThemeProvider } from './context/ThemeContext'; // Import ThemeProvider
 function App() {
   return (
     <Router>
-      <ThemeProvider>
-        <AuthProvider>
+      <AuthProvider>
+        <ThemeProvider>
           <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
@@ -55,8 +55,8 @@ function App() {
            <Route path="/raffle/:id" element={<RaffleView />} />
            <Route path="/raffle-results/:public_id" element={<RaffleResults />} />
         </Routes>
-        </AuthProvider>
-      </ThemeProvider>
+        </ThemeProvider>
+      </AuthProvider>
     </Router>
   );
 }

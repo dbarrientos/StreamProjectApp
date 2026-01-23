@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTranslation, Trans } from 'react-i18next';
 import { getRaffles } from '../services/api';
-import { Calendar, Clock, Gamepad2, Zap } from 'lucide-react'; // Updated imports for icons
-import Layout from '../components/Layout'; // New import
+import { Calendar, Clock, Gamepad2, Zap } from 'lucide-react';
+import Layout from '../components/Layout';
 
 import WinnerList from '../components/WinnerList';
 
 const Dashboard = () => {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [raffles, setRaffles] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -31,11 +33,15 @@ const Dashboard = () => {
         {/* Welcome Section */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-12">
             <div>
-                <h1 className="text-4xl md:text-5xl text-skin-text-base theme-title glitch-text" data-text="DASHBOARD">
-                    DASHBOARD
+                <h1 className="text-4xl md:text-5xl text-skin-text-base theme-title glitch-text" data-text={t('dashboard.title')}>
+                    {t('dashboard.title')}
                 </h1>
                 <p className="text-skin-text-muted mt-2 text-lg">
-                    Bienvenido de nuevo, <span className="text-skin-accent font-bold">@{user?.username}</span>
+                    <Trans 
+                        i18nKey="dashboard.welcome"
+                        values={{ username: user?.username }}
+                        components={{ 1: <span className="text-skin-accent font-bold"/> }}
+                    />
                 </p>
             </div>
             
@@ -45,7 +51,7 @@ const Dashboard = () => {
             >
                 <div className="skew-x-[10deg] flex items-center gap-2">
                     <Zap size={20} className="fill-black" />
-                    Nuevo Sorteo
+                    {t('dashboard.new_raffle')}
                 </div>
             </Link>
         </div>
@@ -54,7 +60,7 @@ const Dashboard = () => {
         <div className="mb-12">
             <h2 className="text-2xl font-bold text-skin-text-base mb-6 flex items-center gap-2">
                 <Clock className="text-skin-secondary" />
-                Actividad Reciente
+                {t('dashboard.recent_activity.title')}
             </h2>
             
             {loading ? (
@@ -66,10 +72,10 @@ const Dashboard = () => {
             ) : raffles.length === 0 ? (
                 <div className="text-center py-20 border-2 border-dashed border-skin-border rounded-2xl bg-black/20">
                     <Gamepad2 size={48} className="mx-auto mb-4 text-skin-text-muted" />
-                    <h3 className="text-xl font-bold text-skin-text-muted mb-2">Sin actividad reciente</h3>
-                    <p className="text-skin-text-muted mb-6 opacity-70">Aún no has creado ningún sorteo. ¡Es hora de empezar!</p>
+                    <h3 className="text-xl font-bold text-skin-text-muted mb-2">{t('dashboard.recent_activity.empty_title')}</h3>
+                    <p className="text-skin-text-muted mb-6 opacity-70">{t('dashboard.recent_activity.empty_desc')}</p>
                     <Link to="/raffle/new" className="text-skin-accent hover:underline uppercase font-bold text-sm tracking-wider">
-                        Crear mi primer sorteo
+                        {t('dashboard.recent_activity.create_first')}
                     </Link>
                 </div>
             ) : (
@@ -86,11 +92,11 @@ const Dashboard = () => {
                                     <div>
                                         {raffle.status === 'active' ? (
                                             <span className="inline-flex items-center px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider bg-skin-accent/10 text-skin-accent border border-skin-accent/20 animate-pulse">
-                                                En curso
+                                                {t('dashboard.raffle.status.active')}
                                             </span>
                                         ) : raffle.status === 'completed' ? (
                                             <span className="inline-flex items-center px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider bg-skin-border/30 text-skin-text-muted border border-skin-border">
-                                                Finalizado
+                                                {t('dashboard.raffle.status.completed')}
                                             </span>
                                         ) : (
                                             <span className="inline-flex items-center px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider bg-skin-border/30 text-skin-text-muted border border-skin-border">
@@ -108,14 +114,14 @@ const Dashboard = () => {
                                     </div>
                                     <div className="w-px h-full bg-skin-border"></div>
                                     <div>
-                                        {raffle.participants?.length || 0} Participantes
+                                        {raffle.participants?.length || 0} {t('dashboard.raffle.participants')}
                                     </div>
                                 </div>
 
                                 {/* Winner Section */}
                                 <div className="mt-auto pt-4 border-t border-skin-border">
                                     <div className="text-[10px] uppercase font-bold text-skin-text-muted mb-2 tracking-widest opacity-70">
-                                        Resultados
+                                        {t('dashboard.raffle.results')}
                                     </div>
                                     <WinnerList winners={raffle.winners} />
                                 </div>
@@ -128,7 +134,7 @@ const Dashboard = () => {
                                             target="_blank"
                                             className="w-full flex items-center justify-center gap-2 py-2 rounded border border-skin-success/20 text-skin-success hover:bg-skin-success/10 hover:border-skin-success/50 transition-all uppercase text-xs font-bold tracking-wider"
                                         >
-                                            Ver Postal
+                                            {t('dashboard.raffle.view_postcard')}
                                         </Link>
                                     </div>
                                 )}
@@ -142,7 +148,7 @@ const Dashboard = () => {
                             to="/history"
                             className="flex items-center gap-2 px-6 py-3 bg-skin-base-secondary hover:bg-skin-border/10 text-skin-text-base rounded-lg border border-skin-border hover:border-skin-accent transition-all group"
                         >
-                            <span className="uppercase font-bold tracking-wider text-xs group-hover:text-skin-accent transition-colors">Ver historial completo</span>
+                            <span className="uppercase font-bold tracking-wider text-xs group-hover:text-skin-accent transition-colors">{t('dashboard.view_history')}</span>
                             <Clock size={14} className="group-hover:text-skin-accent transition-colors"/>
                         </Link>
                     </div>

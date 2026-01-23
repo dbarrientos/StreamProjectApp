@@ -1,0 +1,177 @@
+{
+  "login": {
+    "connect_twitch": "Conectar con Twitch",
+    "secure_access": "Acceso Seguro • Solo Lectura • Sin Spam",
+    "hero_title_1": "STREAM",
+    "hero_title_2": "RAFFLE",
+    "hero_description": "La plataforma definitiva para gestionar tus sorteos en Twitch.",
+    "no_bots": "Sin bots. Sin complicaciones.",
+    "features": {
+      "integration": {
+        "title": "Integración Total",
+        "desc": "Sincroniza chat, seguidores y suscriptores al instante. Filtra y organiza a tu audiencia sin esfuerzo."
+      },
+      "obs": {
+        "title": "Modo Cine (OBS)",
+        "desc": "Ventana limpia y animada dedicada para OBS. Tus viewers verán la ruleta girar en tiempo real."
+      },
+      "history": {
+        "title": "Historial Seguro",
+        "desc": "Registro automático de ganadores. Evita repeticiones y mantén la transparencia en tus sorteos."
+      }
+    },
+    "version": "v1.0 • Powered by Zero"
+  },
+  "dashboard": {
+    "title": "DASHBOARD",
+    "welcome": "Bienvenido de nuevo, <1>@{{username}}</1>",
+    "new_raffle": "Nuevo Sorteo",
+    "recent_activity": {
+      "title": "Actividad Reciente",
+      "empty_title": "Sin actividad reciente",
+      "empty_desc": "Aún no has creado ningún sorteo. ¡Es hora de empezar!",
+      "create_first": "Crear mi primer sorteo"
+    },
+    "raffle": {
+      "status": {
+        "active": "En curso",
+        "completed": "Finalizado"
+      },
+      "participants": "Participantes",
+      "results": "Resultados",
+      "view_postcard": "Ver Postal"
+    },
+    "view_history": "Ver historial completo"
+  },
+  "navbar": {
+    "dashboard": "Dashboard",
+    "logout": "Salir"
+  },
+  "raffle_form": {
+    "title": "NUEVO SORTEO",
+    "subtitle": "Configura las reglas. <1>Domina el azar.</1>",
+    "cancel": "Cancelar / Salir",
+    "import": {
+      "title": "Importar",
+      "chat": "Importar Viewers (Chat)",
+      "followers": "Importar Followers",
+      "subs": "Importar Subs"
+    },
+    "basic_info": {
+      "title": "Información Básica",
+      "raffle_title": "Título del Sorteo",
+      "raffle_title_placeholder": "Ej: Sorteo Especial 1K...",
+      "keyword": "Keyword (Comando)",
+      "keyword_placeholder": "participo",
+      "manual_add": "Agregar Manualmente",
+      "manual_add_placeholder": "Nombres separados por coma o enter...",
+      "add_list": "Agregar Lista"
+    },
+    "advanced_options": {
+      "title": "Opciones Avanzadas",
+      "countdown": {
+        "label": "Cuenta Regresiva",
+        "desc": "Tiempo límite para unirse",
+        "duration": "Duración (segundos)"
+      },
+      "subscriber_luck": {
+        "label": "Suerte de Suscriptor"
+      },
+      "subscriber_only": {
+        "label": "Solo Suscriptores",
+        "desc": "Exclusivo para subs"
+      }
+    },
+    "status": {
+      "connected": "Conectado al Chat",
+      "disconnected": "Desconectado",
+      "channel": "Canal",
+      "participants": "Participantes",
+      "clear_all": "Borrar Todos"
+    },
+    "chat_area": {
+      "waiting": "Esperando participantes...",
+      "instruction_connected": "Escribe !{{keyword}} en el chat",
+      "instruction_disconnected": "Conecta el chat para comenzar"
+    },
+    "actions": {
+      "obs_link": "Link para OBS / Browser Source",
+      "copy": "Copiar",
+      "copied": "¡Copiado!",
+      "connect": "Conectar Chat",
+      "disconnect": "Desconectar",
+      "start": "Abrir Sorteo",
+      "close": "Cerrar y Sortear",
+      "continue": "Continuar Sorteo",
+      "finish": "Finalizar Sorteo"
+    },
+    "alerts": {
+      "chat_error": "No se pudo conectar al chat. Verifica tu conexión.",
+      "title_required": "¡Debes ponerle un nombre al sorteo!",
+      "create_error": "Error al iniciar sorteo.",
+      "no_participants": "¡No hay participantes!",
+      "no_eligible": "¡No hay participantes elegibles!",
+      "import_followers_success": "Importados {{count}} seguidores.",
+      "import_followers_error": "Error al importar seguidores.",
+      "import_subs_success": "Importados {{count}} suscriptores.",
+      "import_subs_error": "Error al importar suscriptores. (Requiere ser el broadcaster)",
+      "import_chat_error": "Error: No hay canal definido",
+      "import_chat_success": "Importados {{count}} viewers.",
+      "import_chat_fail": "Error al importar viewers. (Asegúrate de estar en vivo o tener el chat conectado)",
+      "confirm_clear": "¿Estás seguro de que quieres eliminar a TODOS los participantes?"
+    },
+    "overlays": {
+      "review": {
+        "title": "🎉 ¡Tenemos Ganador!",
+        "confirm": "Confirmar",
+        "al_agua": "Al Agua"
+      },
+      "win": {
+        "title": "¡Felicidades!",
+        "desc": "<1>@{{winner}}</1> ha ganado el sorteo.",
+        "spin_another": "Sortear Otro",
+        "finish": "Finalizar"
+      },
+      "loss": {
+        "title": "¡Tiempo Agotado!",
+        "desc": "<1>@{{winner}}</1> perdió su oportunidad."
+      }
+    }
+  },
+  "raffle_view": {
+    "hosted_by": "Organizado por",
+    "completed": "Sorteo Finalizado",
+    "winner": "¡GANADOR!",
+    "al_agua": {
+      "title": "Lo sentimos, te fuiste al agua"
+    },
+    "loss": {
+      "title": "TIEMPO AGOTADO",
+      "desc": "{{winner}} perdió su oportunidad"
+    },
+    "waiting": {
+      "title": "Esperando a {{winner}}...",
+      "time_up": "¡¡¡RÁPIDO!!! ESCRIBE EN EL CHAT"
+    },
+    "spinning": "¡Mucha suerte!"
+  },
+  "history": {
+    "title": "Historial Completo",
+    "subtitle": "Todos los sorteos realizados.",
+    "search_placeholder": "Buscar por título...",
+    "clear_filters": "Limpiar Filtros",
+    "loading": "Cargando historial...",
+    "empty": "No se encontraron sorteos.",
+    "participants": "Participantes",
+    "winner_label": "Ganador",
+    "view_postcard": "Ver Postal"
+  },
+  "results": {
+    "not_found": "Sorteo no encontrado",
+    "hosted_by": "Organizado por",
+    "no_winners": "No se registraron ganadores en este evento.",
+    "verified_winner": "Ganador Verificado",
+    "link_copied": "Enlace Copiado",
+    "share_result": "Compartir Resultado"
+  }
+}

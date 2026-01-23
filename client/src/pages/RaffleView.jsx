@@ -2,11 +2,13 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import RaffleWheel from '../components/RaffleWheel';
 import confetti from 'canvas-confetti';
+import { useTranslation, Trans } from 'react-i18next';
 import { API_URL } from '../services/api';
 
 import { useTheme } from '../context/ThemeContext';
 
 const RaffleView = () => {
+    const { t } = useTranslation();
     const { theme } = useTheme();
     const [participants, setParticipants] = useState([]);
     const [spinning, setSpinning] = useState(false);
@@ -196,7 +198,7 @@ const RaffleView = () => {
                         </div>
                     )}
                     <div className="flex flex-col items-center gap-0.5">
-                        <span className="text-skin-accent text-[10px] font-bold uppercase tracking-widest opacity-80">Organizado por</span>
+                        <span className="text-skin-accent text-[10px] font-bold uppercase tracking-widest opacity-80">{t('raffle_view.hosted_by')}</span>
                         <span className="text-lg font-bold text-skin-text-base tracking-wide">@{host.username}</span>
                     </div>
                 </div>
@@ -208,7 +210,7 @@ const RaffleView = () => {
                  <div className="flex flex-col items-center justify-center p-12 border-2 border-dashed border-skin-border/30 rounded-3xl bg-skin-panel/50 backdrop-blur-sm animate-fade-in my-12">
                     <div className="text-6xl mb-4 opacity-50">🏁</div>
                     <div className="text-4xl font-bold text-skin-text-muted theme-title tracking-widest uppercase">
-                        Sorteo Finalizado
+                        {t('raffle_view.completed')}
                     </div>
                 </div>
             ) : (
@@ -225,37 +227,37 @@ const RaffleView = () => {
             <div className="mt-16 text-center h-24">
                 {status === 'WIN' && (
                     <div className="animate-bounce">
-                        <div className="text-6xl font-bold text-skin-success theme-title">¡GANADOR!</div>
+                        <div className="text-6xl font-bold text-skin-success theme-title">{t('raffle_view.winner')}</div>
                         <div className="text-3xl text-skin-text-base mt-2 theme-title">{winner}</div>
                     </div>
                 )}
                 {status === 'AL_AGUA' && (
                     <div className="text-red-500 animate-pulse">
-                        <div className="text-4xl font-bold text-skin-danger theme-title">Lo sentimos, te fuiste al agua</div>
+                        <div className="text-4xl font-bold text-skin-danger theme-title">{t('raffle_view.al_agua.title')}</div>
                         <div className="text-2xl text-skin-text-muted mt-2 theme-title">{winner}</div>
                     </div>
                 )}
                 {status === 'LOSS' && (
                     <div className="text-red-600 animate-pulse">
-                        <div className="text-6xl font-bold text-skin-danger theme-title">TIEMPO AGOTADO</div>
-                        <div className="text-2xl text-skin-text-muted mt-2 theme-title">{winner} perdió su oportunidad</div>
+                        <div className="text-6xl font-bold text-skin-danger theme-title">{t('raffle_view.loss.title')}</div>
+                        <div className="text-2xl text-skin-text-muted mt-2 theme-title">{t('raffle_view.loss.desc', { winner })}</div>
                     </div>
                 )}
                 {status === 'WAITING' && (
                     <div className="flex flex-col items-center">
                         <div className="text-2xl text-skin-warning mb-2 theme-title">
-                             Esperando a {winner}...
+                             {t('raffle_view.waiting.title', { winner })}
                         </div>
                         <div className="text-5xl font-mono font-bold text-skin-warning drop-shadow-[0_0_10px_rgba(234,179,8,0.5)]">
                             {timeLeft}s
                         </div>
                         <div className="text-xl text-red-400 font-bold mt-2 animate-bounce">
-                           ¡¡¡RÁPIDO!!! ESCRIBE EN EL CHAT
+                           {t('raffle_view.waiting.time_up')}
                         </div>
                     </div>
                 )}
                 {status === 'SPINNING' && (
-                    <div className="text-2xl text-skin-accent animate-pulse theme-title">¡Mucha suerte!</div>
+                    <div className="text-2xl text-skin-accent animate-pulse theme-title">{t('raffle_view.spinning')}</div>
                 )}
             </div>
             <div className="absolute bottom-4 text-skin-text-muted text-xs font-medium uppercase tracking-widest opacity-50">

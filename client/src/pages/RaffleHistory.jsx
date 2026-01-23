@@ -1,8 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { useAuth } from '../context/AuthContext';
+import { getRaffles } from '../services/api';
+import { ArrowLeft, Search, Calendar, Trophy } from 'lucide-react';
 import Layout from '../components/Layout';
+import WinnerList from '../components/WinnerList';
 
 const RaffleHistory = () => {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [raffles, setRaffles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -52,8 +59,8 @@ const RaffleHistory = () => {
                     <ArrowLeft size={24} />
                 </Link>
                 <div>
-                    <h2 className="text-3xl text-skin-text-base theme-title">Historial Completo</h2>
-                    <p className="text-skin-text-muted">Todos los sorteos realizados.</p>
+                    <h2 className="text-3xl text-skin-text-base theme-title">{t('history.title')}</h2>
+                    <p className="text-skin-text-muted">{t('history.subtitle')}</p>
                 </div>
             </div>
         </div>
@@ -64,7 +71,7 @@ const RaffleHistory = () => {
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-skin-text-muted" size={18} />
                 <input 
                     type="text" 
-                    placeholder="Buscar por título..." 
+                    placeholder={t('history.search_placeholder')} 
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="w-full bg-skin-panel border border-skin-border rounded-lg py-2 pl-10 pr-4 text-skin-text-base focus:border-skin-accent outline-none transition-colors"
@@ -84,7 +91,7 @@ const RaffleHistory = () => {
                     onClick={() => {setSearchTerm(""); setDateFilter("");}}
                     className="text-xs text-skin-secondary hover:underline whitespace-nowrap"
                 >
-                    Limpiar Filtros
+                    {t('history.clear_filters')}
                 </button>
             )}
         </div>
@@ -92,10 +99,10 @@ const RaffleHistory = () => {
         {/* History Grid */}
         <div className="mb-8">
             {loading ? (
-                <div className="text-skin-text-muted animate-pulse">Cargando historial...</div>
+                <div className="text-skin-text-muted animate-pulse">{t('history.loading')}</div>
             ) : filteredRaffles.length === 0 ? (
                 <div className="text-skin-text-muted italic py-12 text-center border-2 border-dashed border-skin-border rounded-2xl">
-                    No se encontraron sorteos.
+                    {t('history.empty')}
                 </div>
             ) : (
                 <>
@@ -111,11 +118,11 @@ const RaffleHistory = () => {
                                     </h3>
                                     {raffle.status === 'active' ? (
                                         <span className="inline-flex items-center px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider bg-skin-accent/10 text-skin-accent border border-skin-accent/20 animate-pulse">
-                                            En curso
+                                            {t('dashboard.raffle.status.active')}
                                         </span>
                                     ) : raffle.status === 'completed' ? (
                                         <span className="inline-flex items-center px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider bg-skin-border/20 text-skin-text-muted border border-skin-border">
-                                            Finalizado
+                                            {t('dashboard.raffle.status.completed')}
                                         </span>
                                     ) : (
                                         <span className="inline-flex items-center px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider bg-skin-border/20 text-skin-text-muted border border-skin-border">
@@ -131,7 +138,7 @@ const RaffleHistory = () => {
                                     </div>
                                     <div className="w-px h-full bg-skin-border"></div>
                                     <div>
-                                        {raffle.participants?.length || 0} Participantes
+                                        {raffle.participants?.length || 0} {t('history.participants')}
                                     </div>
                                 </div>
                             </div>
@@ -139,7 +146,7 @@ const RaffleHistory = () => {
                             {/* Middle: Winner */}
                             <div className="w-full md:w-1/3 border-t md:border-t-0 md:border-l border-skin-border pt-4 md:pt-0 md:pl-6">
                                 <div className="text-[10px] uppercase font-bold text-skin-text-muted mb-2 tracking-widest hidden md:block">
-                                    Ganador
+                                    {t('history.winner_label')}
                                 </div>
                                 <WinnerList winners={raffle.winners} />
                             </div>
@@ -150,7 +157,7 @@ const RaffleHistory = () => {
                                      <Link 
                                         to={`/raffle-results/${raffle.public_id}`}
                                         target="_blank"
-                                        title="Ver Postal"
+                                        title={t('history.view_postcard')}
                                         className="w-10 h-10 flex items-center justify-center rounded-lg border border-skin-success/20 text-skin-success hover:bg-skin-success/10 hover:border-skin-success/50 transition-all"
                                     >
                                         <Trophy size={18} />
@@ -164,7 +171,7 @@ const RaffleHistory = () => {
                                     to={`/raffle-results/${raffle.public_id}`}
                                     className="md:hidden w-full flex items-center justify-center gap-2 py-2 rounded border border-skin-success/20 text-skin-success hover:bg-skin-success/10 font-bold uppercase text-xs"
                                 >
-                                    Ver Postal
+                                    {t('history.view_postcard')}
                                 </Link>
                             )}
                             

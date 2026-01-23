@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Zap } from 'lucide-react';
+import LogoIcon from './LogoIcon';
 
 import ThemeSelector from './ThemeSelector'; // Import ThemeSelector
 
@@ -10,7 +10,12 @@ const Logo = () => {
     return (
         <div className="flex items-center gap-2 group">
             <div className="p-1 bg-skin-accent/10 rounded-lg group-hover:bg-skin-accent/20 transition-colors">
-                <Zap className="text-skin-accent" size={20} fill="currentColor" fillOpacity={0.2} />
+                <LogoIcon 
+                    className="h-6 w-auto drop-shadow-[0_0_5px_var(--color-accent)]" 
+                    fillPrimary="var(--color-accent)"
+                    fillSecondary="var(--color-accent)"
+                    fillTertiary="var(--color-accent)"
+                />
             </div>
             <span className="theme-title text-xl text-skin-text-base group-hover:text-skin-accent transition-colors">
                 {appName.toUpperCase()}

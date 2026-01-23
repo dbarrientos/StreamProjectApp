@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { Twitch, Zap, Monitor, History, Sparkles } from 'lucide-react';
 import Layout from '../components/Layout';
+import LogoIcon from '../components/LogoIcon';
 
 const Login = () => {
   const { login } = useAuth();
@@ -33,8 +34,10 @@ const Login = () => {
                 {/* Logo / Icon */}
                 <div className="mb-8 relative inline-block group">
                     <div className="absolute inset-0 bg-skin-success blur-2xl opacity-20 group-hover:opacity-40 transition-opacity duration-700"></div>
-                    <div className="relative bg-skin-base-secondary p-8 rounded-3xl border border-skin-border shadow-2xl skew-y-3 group-hover:skew-y-0 transition-all duration-500 transform group-hover:scale-110">
-                        <Zap size={80} className="text-skin-success drop-shadow-[0_0_15px_rgba(0,255,150,0.5)]" strokeWidth={1.5} />
+                     <div className="relative p-4 rounded-3xl transition-all duration-500 transform group-hover:scale-110">
+                        <LogoIcon 
+                            className="h-32 w-auto drop-shadow-[0_0_20px_var(--color-accent)]"
+                        />
                     </div>
                 </div>
 

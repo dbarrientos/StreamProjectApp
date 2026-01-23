@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Nunito:wght@400;600;700;900&family=Press+Start+2P&family=Fredoka:wght@300;400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Nunito:wght@400;600;700;900&family=Press+Start+2P&family=Fredoka:wght@300;400;500;600;700&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -10,47 +10,49 @@
   --color-bg-secondary: #0c0c1e; /* Card background */
   --color-text-base: #e2e8f0;
   --color-text-muted: #94a3b8;
-  
-  --color-accent: #06b6d4; /* Soft Neon Cyan */
+
+  --color-accent: #00f3ff; /* Vibrant Neon Cyan */
   --color-accent-hover: #0891b2;
   --color-secondary: #ff00ff; /* Neon Magenta */
   --color-success: #ccff00; /* Neon Yellow/Green */
-  --color-danger: #ef4444; 
+  --color-danger: #ef4444;
   --color-warning: #eab308;
-  
+
   --color-panel: rgba(12, 12, 30, 0.95);
   --color-border: #0891b2; /* Dark Cyan (Celeste Oscuro) */
+  --color-logo-secondary: var(--color-success);
 
-  --font-primary: 'Rajdhani', sans-serif;
-  --font-display: 'Rajdhani', sans-serif;
+  --font-primary: "Rajdhani", sans-serif;
+  --font-display: "Rajdhani", sans-serif;
 }
 
-[data-theme='kawaii'] {
+[data-theme="kawaii"] {
   --color-bg-base: #fff0f5; /* Lavender Blush */
   --color-bg-secondary: #ffffff;
   --color-text-base: #5d4037; /* Brown */
   --color-text-muted: #9e8576;
-  
+
   --color-accent: #ff69b4; /* Hot Pink */
   --color-accent-hover: #ff1493;
   --color-secondary: #87ceeb; /* Sky Blue */
   --color-success: #98fb98; /* Pale Green */
   --color-danger: #ff6b6b;
   --color-warning: #ffd700;
-  
+
   --color-panel: rgba(255, 255, 255, 0.9);
   --color-border: #f8c8dc;
+  --color-logo-secondary: #5d4037;
 
-  --font-primary: 'Nunito', sans-serif;
-  --font-display: 'Fredoka', cursive;
+  --font-primary: "Nunito", sans-serif;
+  --font-display: "Fredoka", cursive;
 }
 
-[data-theme='mario'] {
+[data-theme="mario"] {
   --color-bg-base: #5c94fc; /* Sky Blue */
   --color-bg-secondary: #000000; /* Black for contrast boxes or retro block style */
   --color-text-base: #ffffff;
   --color-text-muted: #cccccc;
-  
+
   --color-accent: #e60012; /* Mario Red */
   --color-accent-hover: #b3000f;
   --color-secondary: #00a000; /* Luigi Green */
@@ -60,9 +62,9 @@
 
   --color-panel: rgba(0, 0, 0, 0.85);
   --color-border: #fbd000;
-  
+
   /* Fallback if VT323 not avail, using Press Start 2P for headers */
-  --font-display: 'Press Start 2P', cursive;
+  --font-display: "Press Start 2P", cursive;
 }
 
 /* Theme-aware Title Utility */
@@ -72,7 +74,7 @@
   letter-spacing: normal;
   font-weight: 900; /* Default for Cyberpunk (Rajdhani 900 supported? Actually max 700 in import, let's allow bold) */
 }
-[data-theme='cyberpunk'] .theme-title {
+[data-theme="cyberpunk"] .theme-title {
   font-style: italic;
   letter-spacing: -0.05em; /* tracking-tighter */
   font-weight: 900; /* Nunito has 900, Rajdhani has 700. Wait, Rajdhani import is 400;500;600;700. Nunito is 900. Base font is Rajdhani. */
@@ -83,20 +85,19 @@
   */
 }
 
-[data-theme='mario'] .theme-title {
+[data-theme="mario"] .theme-title {
   font-style: normal;
   letter-spacing: 0.05em; /* tracking-wide */
   font-weight: 400; /* Press Start 2P is only 400 */
 }
 
-[data-theme='kawaii'] .theme-title {
+[data-theme="kawaii"] .theme-title {
   font-style: normal;
   letter-spacing: 0.02em;
   font-weight: 600; /* Fredoka looks best at 600 (SemiBold) or 700. Avoid 900. */
 }
 
 /* Login Title Layout - Reverted */
-
 
 /* Base Body Styles applied through Tailwind now */
 body {
@@ -107,18 +108,18 @@ body {
 }
 
 /* Glitch Effect Utilities (Keep as is, maybe disable for Kawaii/Mario unless adapted) */
-[data-theme='cyberpunk'] .glitch-text,
-[data-theme='kawaii'] .glitch-text,
-[data-theme='mario'] .glitch-text {
+[data-theme="cyberpunk"] .glitch-text,
+[data-theme="kawaii"] .glitch-text,
+[data-theme="mario"] .glitch-text {
   position: relative;
 }
 /* ... Only apply glitch defaults if theme is not present or is cyberpunk ... */
-[data-theme='cyberpunk'] .glitch-text::before,
-[data-theme='cyberpunk'] .glitch-text::after,
-[data-theme='kawaii'] .glitch-text::before,
-[data-theme='kawaii'] .glitch-text::after,
-[data-theme='mario'] .glitch-text::before,
-[data-theme='mario'] .glitch-text::after {
+[data-theme="cyberpunk"] .glitch-text::before,
+[data-theme="cyberpunk"] .glitch-text::after,
+[data-theme="kawaii"] .glitch-text::before,
+[data-theme="kawaii"] .glitch-text::after,
+[data-theme="mario"] .glitch-text::before,
+[data-theme="mario"] .glitch-text::after {
   content: attr(data-text);
   position: absolute;
   top: 0;
@@ -127,42 +128,84 @@ body {
   height: 100%;
 }
 
-[data-theme='cyberpunk'] .glitch-text::before {
-   left: 2px; text-shadow: -1px 0 var(--color-secondary); clip: rect(44px, 450px, 56px, 0); animation: glitch-anim 5s infinite linear alternate-reverse;
+[data-theme="cyberpunk"] .glitch-text::before {
+  left: 2px;
+  text-shadow: -1px 0 var(--color-secondary);
+  clip: rect(44px, 450px, 56px, 0);
+  animation: glitch-anim 5s infinite linear alternate-reverse;
 }
-[data-theme='cyberpunk'] .glitch-text::after {
-   left: -2px; text-shadow: -1px 0 var(--color-accent); clip: rect(44px, 450px, 56px, 0); animation: glitch-anim2 5s infinite linear alternate-reverse;
+[data-theme="cyberpunk"] .glitch-text::after {
+  left: -2px;
+  text-shadow: -1px 0 var(--color-accent);
+  clip: rect(44px, 450px, 56px, 0);
+  animation: glitch-anim2 5s infinite linear alternate-reverse;
 }
 
-[data-theme='kawaii'] .glitch-text::before {
-   left: 2px; text-shadow: -1px 0 var(--color-accent); /* Hot Pink */ clip: rect(44px, 450px, 56px, 0); animation: glitch-anim 5s infinite linear alternate-reverse;
+[data-theme="kawaii"] .glitch-text::before {
+  left: 2px;
+  text-shadow: -1px 0 var(--color-accent); /* Hot Pink */
+  clip: rect(44px, 450px, 56px, 0);
+  animation: glitch-anim 5s infinite linear alternate-reverse;
 }
-[data-theme='kawaii'] .glitch-text::after {
-   left: -2px; text-shadow: -1px 0 var(--color-secondary); /* Sky Blue */ clip: rect(44px, 450px, 56px, 0); animation: glitch-anim2 5s infinite linear alternate-reverse;
+[data-theme="kawaii"] .glitch-text::after {
+  left: -2px;
+  text-shadow: -1px 0 var(--color-secondary); /* Sky Blue */
+  clip: rect(44px, 450px, 56px, 0);
+  animation: glitch-anim2 5s infinite linear alternate-reverse;
 }
 
-[data-theme='mario'] .glitch-text::before {
-   left: 2px; text-shadow: -1px 0 var(--color-accent); /* Mario Red */ clip: rect(44px, 450px, 56px, 0); animation: glitch-anim 5s infinite linear alternate-reverse;
+[data-theme="mario"] .glitch-text::before {
+  left: 2px;
+  text-shadow: -1px 0 var(--color-accent); /* Mario Red */
+  clip: rect(44px, 450px, 56px, 0);
+  animation: glitch-anim 5s infinite linear alternate-reverse;
 }
-[data-theme='mario'] .glitch-text::after {
-   left: -2px; text-shadow: -1px 0 var(--color-secondary); /* Luigi Green */ clip: rect(44px, 450px, 56px, 0); animation: glitch-anim2 5s infinite linear alternate-reverse;
+[data-theme="mario"] .glitch-text::after {
+  left: -2px;
+  text-shadow: -1px 0 var(--color-secondary); /* Luigi Green */
+  clip: rect(44px, 450px, 56px, 0);
+  animation: glitch-anim2 5s infinite linear alternate-reverse;
 }
 
 /* Animations remain... */
 @keyframes glitch-anim {
-  0% { clip: rect(35px, 9999px, 81px, 0); }
-  20% { clip: rect(6px, 9999px, 14px, 0); }
-  40% { clip: rect(66px, 9999px, 20px, 0); }
-  60% { clip: rect(12px, 9999px, 56px, 0); }
-  80% { clip: rect(49px, 9999px, 86px, 0); }
-  100% { clip: rect(21px, 9999px, 32px, 0); }
+  0% {
+    clip: rect(35px, 9999px, 81px, 0);
+  }
+  20% {
+    clip: rect(6px, 9999px, 14px, 0);
+  }
+  40% {
+    clip: rect(66px, 9999px, 20px, 0);
+  }
+  60% {
+    clip: rect(12px, 9999px, 56px, 0);
+  }
+  80% {
+    clip: rect(49px, 9999px, 86px, 0);
+  }
+  100% {
+    clip: rect(21px, 9999px, 32px, 0);
+  }
 }
 
 @keyframes glitch-anim2 {
-  0% { clip: rect(79px, 9999px, 19px, 0); }
-  20% { clip: rect(32px, 9999px, 5px, 0); }
-  40% { clip: rect(10px, 9999px, 83px, 0); }
-  60% { clip: rect(54px, 9999px, 33px, 0); }
-  80% { clip: rect(9px, 9999px, 94px, 0); }
-  100% { clip: rect(22px, 9999px, 48px, 0); }
+  0% {
+    clip: rect(79px, 9999px, 19px, 0);
+  }
+  20% {
+    clip: rect(32px, 9999px, 5px, 0);
+  }
+  40% {
+    clip: rect(10px, 9999px, 83px, 0);
+  }
+  60% {
+    clip: rect(54px, 9999px, 33px, 0);
+  }
+  80% {
+    clip: rect(9px, 9999px, 94px, 0);
+  }
+  100% {
+    clip: rect(22px, 9999px, 48px, 0);
+  }
 }

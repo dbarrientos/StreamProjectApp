@@ -11,8 +11,11 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[7.1].define(version: 2026_01_22_224758) do
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "raffles", force: :cascade do |t|
-    t.integer "user_id", null: false
+    t.bigint "user_id", null: false
     t.string "title"
     t.json "participants"
     t.string "status"
@@ -35,7 +38,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_22_224758) do
   end
 
   create_table "winners", force: :cascade do |t|
-    t.integer "raffle_id", null: false
+    t.bigint "raffle_id", null: false
     t.string "username"
     t.string "status"
     t.datetime "claimed_at"

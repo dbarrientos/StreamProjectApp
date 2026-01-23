@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  raffle: one
+  username: MyString
+  status: MyString
+  claimed_at: 2026-01-21 21:43:47
+
+two:
+  raffle: two
+  username: MyString
+  status: MyString
+  claimed_at: 2026-01-21 21:43:47

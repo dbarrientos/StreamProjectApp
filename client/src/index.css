@@ -1,0 +1,96 @@
+@import url("https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-bg-dark: #0a0a1a;
+  --color-neon-cyan: #00f3ff;
+  --color-neon-magenta: #ff00ff;
+  --color-neon-yellow: #ccff00;
+}
+
+body {
+  margin: 0;
+  font-family: "Rajdhani", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--color-bg-dark);
+  color: #e2e8f0;
+}
+
+.font-rajdhani {
+  font-family: "Rajdhani", sans-serif;
+}
+
+/* Glitch Effect Utilities */
+.glitch-text {
+  position: relative;
+}
+
+.glitch-text::before,
+.glitch-text::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.glitch-text::before {
+  left: 2px;
+  text-shadow: -1px 0 #ff00ff;
+  clip: rect(44px, 450px, 56px, 0);
+  animation: glitch-anim 5s infinite linear alternate-reverse;
+}
+
+.glitch-text::after {
+  left: -2px;
+  text-shadow: -1px 0 #00f3ff;
+  clip: rect(44px, 450px, 56px, 0);
+  animation: glitch-anim2 5s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-anim {
+  0% {
+    clip: rect(35px, 9999px, 81px, 0);
+  }
+  20% {
+    clip: rect(6px, 9999px, 14px, 0);
+  }
+  40% {
+    clip: rect(66px, 9999px, 20px, 0);
+  }
+  60% {
+    clip: rect(12px, 9999px, 56px, 0);
+  }
+  80% {
+    clip: rect(49px, 9999px, 86px, 0);
+  }
+  100% {
+    clip: rect(21px, 9999px, 32px, 0);
+  }
+}
+
+@keyframes glitch-anim2 {
+  0% {
+    clip: rect(79px, 9999px, 19px, 0);
+  }
+  20% {
+    clip: rect(32px, 9999px, 5px, 0);
+  }
+  40% {
+    clip: rect(10px, 9999px, 83px, 0);
+  }
+  60% {
+    clip: rect(54px, 9999px, 33px, 0);
+  }
+  80% {
+    clip: rect(9px, 9999px, 94px, 0);
+  }
+  100% {
+    clip: rect(22px, 9999px, 48px, 0);
+  }
+}

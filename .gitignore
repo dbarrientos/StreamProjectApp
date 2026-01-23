@@ -1,0 +1,49 @@
+# General
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# Environment Variables
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+
+# Dependencies
+**/node_modules/
+**/vendor/bundle/
+
+# API - Ruby on Rails
+api/log/*
+!api/log/.keep
+api/tmp/
+api/db/*.sqlite3
+api/db/*.sqlite3-journal
+api/public/system
+api/public/assets
+api/public/packs
+api/public/packs-test
+api/storage/
+api/.bundle/
+api/coverage/
+
+# API - Secrets/Keys
+*.pem
+*.key
+config/master.key
+config/credentials.yml.enc
+
+# Client - Vite/React
+client/dist/
+client/build/
+client/.eslintcache
+client/coverage/
+client/*.log
+
+# IDE specific
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace

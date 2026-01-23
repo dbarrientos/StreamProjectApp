@@ -399,7 +399,7 @@ const RafflePage = () => {
     try {
         const data = await getFollowers(user?.uid);
         if (data && data.followers) {
-            const newNames = data.followers;
+            const newNames = data.followers.map(f => f.username);
             setFollowers(prev => {
                 const newSet = new Set(prev);
                 newNames.forEach(n => newSet.add(n.toLowerCase()));
@@ -424,7 +424,7 @@ const RafflePage = () => {
     try {
         const data = await getSubscribers(user?.uid);
         if (data && data.subscribers) {
-            const newNames = data.subscribers;
+            const newNames = data.subscribers.map(s => s.username);
             setSubscribers(prev => {
                 const newSet = new Set(prev);
                 newNames.forEach(n => newSet.add(n.toLowerCase()));
@@ -451,7 +451,7 @@ const RafflePage = () => {
     try {
         const data = await getChatters();
         if (data && data.chatters) {
-            const newNames = data.chatters;
+            const newNames = data.chatters.map(c => c.username);
             setParticipants(prev => {
                 const unique = new Set([...prev, ...newNames]);
                 return Array.from(unique);

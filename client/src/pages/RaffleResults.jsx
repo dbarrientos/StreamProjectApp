@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import confetti from 'canvas-confetti';
 import { Trophy, Share2, Calendar, Clock, Copy, Check } from 'lucide-react';
 import { API_URL } from '../services/api';
 
 const RaffleResults = () => {
+    const { t } = useTranslation();
     const { public_id } = useParams();
     const [raffle, setRaffle] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -15,7 +17,7 @@ const RaffleResults = () => {
         const fetchResults = async () => {
             try {
                 const response = await fetch(`${API_URL}/api/public/raffles/${public_id}`);
-                if (!response.ok) throw new Error('Sorteo no encontrado');
+                if (!response.ok) throw new Error(t('results.not_found'));
                 const data = await response.json();
                 setRaffle(data);
                 
@@ -59,7 +61,7 @@ const RaffleResults = () => {
         const interval = setInterval(fetchResults, 5000);
         
         return () => clearInterval(interval);
-    }, [public_id]);
+    }, [public_id, t]);
 
     const handleCopyLink = () => {
         navigator.clipboard.writeText(window.location.href);
@@ -111,7 +113,7 @@ const RaffleResults = () => {
                                 </div>
                             )}
                             <div className="flex flex-col items-center gap-1">
-                                <span className="text-skin-accent text-[10px] font-bold uppercase tracking-widest">Organizado por</span>
+                                <span className="text-skin-accent text-[10px] font-bold uppercase tracking-widest">{t('results.hosted_by')}</span>
                                 <span className="text-xl font-bold text-skin-text-base tracking-wide">@{raffle.host.username}</span>
                             </div>
                         </div>
@@ -133,7 +135,7 @@ const RaffleResults = () => {
                 <div className="flex flex-col gap-4 mb-12 w-full max-w-2xl mx-auto">
                     {raffle.winners.length === 0 ? (
                         <div className="text-skin-text-muted italic py-12 text-lg border-2 border-dashed border-skin-border rounded-2xl w-full text-center">
-                            No se registraron ganadores en este evento.
+                            {t('results.no_winners')}
                         </div>
                     ) : (
                         raffle.winners.map((winner, idx) => (
@@ -155,7 +157,7 @@ const RaffleResults = () => {
                                         </div>
                                         <div className="flex items-center gap-1.5 text-skin-success text-[10px] uppercase font-bold tracking-wider mt-0.5">
                                             <Check size={10} strokeWidth={4} />
-                                            Ganador Verificado
+                                            {t('results.verified_winner')}
                                         </div>
                                     </div>
 
@@ -178,7 +180,7 @@ const RaffleResults = () => {
                     >
                         {copied ? <Check size={18} className="text-green-400" /> : <Copy size={18} className="text-skin-text-muted group-hover:text-skin-text-base" />}
                         <span className={copied ? "text-green-400" : "text-skin-text-muted group-hover:text-skin-text-base"}>
-                            {copied ? 'Enlace Copiado' : 'Compartir Resultado'}
+                            {copied ? t('results.link_copied') : t('results.share_result')}
                         </span>
                     </button>
 

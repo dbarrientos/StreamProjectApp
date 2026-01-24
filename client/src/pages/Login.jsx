@@ -1,28 +1,35 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
+import { useTranslation } from 'react-i18next';
 import { Twitch, Zap, Monitor, History, Sparkles } from 'lucide-react';
 import Layout from '../components/Layout';
 import LogoIcon from '../components/LogoIcon';
+import ThemeSelector from '../components/ThemeSelector';
+import LanguageSelector from '../components/LanguageSelector';
 
 const Login = () => {
   const { login } = useAuth();
   const { theme } = useTheme();
+  const { t } = useTranslation();
+  
   const appName = import.meta.env.VITE_APP_NAME || "TWITCH RAFFLE";
   const [firstLine, secondLine] = appName.split(" ");
 
   const handleLogin = () => {
-    // Generate a secure random state
     const state = Math.random().toString(36).substring(7);
-    localStorage.setItem('oauth_state', state); // Store it for verification if needed
-    
-    // Redirect to backend auth endpoint
-    // The backend handles the state generation for omniauth
+    localStorage.setItem('oauth_state', state);
     window.location.href = 'https://localhost:3000/auth/twitch';
   };
 
   return (
     <Layout hideNavbar={true}>
+        {/* Absolute Controls for Login Page */}
+        <div className="absolute top-6 right-6 flex gap-3 z-50">
+            <ThemeSelector />
+            <LanguageSelector />
+        </div>
+
         <div className="min-h-screen flex flex-col pt-16 pb-8 px-6">
             
             {/* Hero Section */}
@@ -44,23 +51,23 @@ const Login = () => {
                 <div className="text-5xl md:text-8xl text-skin-text-base theme-title mb-8 leading-tight text-center relative z-10">
                    {theme === 'cyberpunk' || theme === 'kawaii' || theme === 'mario' ? (
                        <>
-                           <div className="glitch-text" data-text={firstLine.toUpperCase()}>
-                                {firstLine.toUpperCase()}
+                           <div className="glitch-text" data-text={t('login.hero_title_1', { defaultValue: firstLine.toUpperCase() })}>
+                                {t('login.hero_title_1', { defaultValue: firstLine.toUpperCase() })}
                            </div>
                            {secondLine && (
-                               <div className="glitch-text text-skin-accent" data-text={secondLine.toUpperCase()}>
-                                   {secondLine.toUpperCase()}
+                               <div className="glitch-text text-skin-accent" data-text={t('login.hero_title_2', { defaultValue: secondLine.toUpperCase() })}>
+                                   {t('login.hero_title_2', { defaultValue: secondLine.toUpperCase() })}
                                </div>
                            )}
                        </>
                    ) : (
                        <>
                            <div>
-                                {firstLine.toUpperCase()}
+                                {t('login.hero_title_1', { defaultValue: firstLine.toUpperCase() })}
                            </div>
                            {secondLine && (
                                <div className="text-skin-accent">
-                                   {secondLine.toUpperCase()}
+                                   {t('login.hero_title_2', { defaultValue: secondLine.toUpperCase() })}
                                </div>
                            )}
                        </>
@@ -68,8 +75,8 @@ const Login = () => {
                 </div>
                 
                 <p className="text-skin-text-muted text-xl md:text-2xl mb-12 font-medium max-w-xl mx-auto text-center leading-relaxed">
-                    La plataforma definitiva para gestionar tus sorteos en Twitch.<br/>
-                    <span className="text-skin-base font-bold bg-skin-secondary/10 px-2 py-1 rounded-lg mt-2 inline-block">Sin bots. Sin complicaciones.</span>
+                    {t('login.hero_description')}<br/>
+                    <span className="text-skin-accent font-black mt-2 inline-block drop-shadow-md tracking-wider text-2xl">{t('login.no_bots')}</span>
                 </p>
 
                 <div className="max-w-md w-full mx-auto relative z-20">
@@ -80,11 +87,11 @@ const Login = () => {
                       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000 ease-in-out"></div>
                       <div className="flex items-center justify-center gap-4 relative z-10">
                         <Twitch size={32} />
-                        <span>Conectar con Twitch</span>
+                        <span>{t('login.connect_twitch')}</span>
                       </div>
                     </button>
                     <p className="mt-4 text-xs text-skin-text-muted text-center uppercase tracking-widest opacity-60">
-                        Acceso Seguro • Solo Lectura • Sin Spam
+                        {t('login.secure_access')}
                     </p>
                 </div>
             </div>
@@ -95,9 +102,9 @@ const Login = () => {
                     <div className="w-12 h-12 bg-skin-accent/10 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                         <Monitor size={24} className="text-skin-accent" />
                     </div>
-                    <h3 className="text-xl font-bold text-skin-text-base mb-3">Integración Total</h3>
+                    <h3 className="text-xl font-bold text-skin-text-base mb-3">{t('login.features.integration.title')}</h3>
                     <p className="text-skin-text-muted leading-relaxed">
-                        Sincroniza chat, seguidores y suscriptores al instante. Filtra y organiza a tu audiencia sin esfuerzo.
+                        {t('login.features.integration.desc')}
                     </p>
                 </div>
 
@@ -105,9 +112,9 @@ const Login = () => {
                     <div className="w-12 h-12 bg-skin-success/10 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                         <Zap size={24} className="text-skin-success" />
                     </div>
-                    <h3 className="text-xl font-bold text-skin-text-base mb-3">Modo Cine (OBS)</h3>
+                    <h3 className="text-xl font-bold text-skin-text-base mb-3">{t('login.features.obs.title')}</h3>
                     <p className="text-skin-text-muted leading-relaxed">
-                        Ventana limpia y animada dedicada para OBS. Tus viewers verán la ruleta girar en tiempo real.
+                        {t('login.features.obs.desc')}
                     </p>
                 </div>
 
@@ -115,9 +122,9 @@ const Login = () => {
                     <div className="w-12 h-12 bg-skin-danger/10 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                         <History size={24} className="text-skin-danger" />
                     </div>
-                    <h3 className="text-xl font-bold text-skin-text-base mb-3">Historial Seguro</h3>
+                    <h3 className="text-xl font-bold text-skin-text-base mb-3">{t('login.features.history.title')}</h3>
                     <p className="text-skin-text-muted leading-relaxed">
-                        Registro automático de ganadores. Evita repeticiones y mantén la transparencia en tus sorteos.
+                        {t('login.features.history.desc')}
                     </p>
                 </div>
             </div>
@@ -125,7 +132,7 @@ const Login = () => {
             <div className="mt-16 text-center">
                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-skin-base-secondary border border-skin-border text-xs font-mono text-skin-text-muted">
                     <Sparkles size={12} className="text-skin-accent" />
-                    <span>v1.0 • Powered by Zero</span>
+                    <span>{t('login.version')}</span>
                  </div>
             </div>
 

@@ -1,9 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 import LogoIcon from './LogoIcon';
 
-import ThemeSelector from './ThemeSelector'; // Import ThemeSelector
+import ThemeSelector from './ThemeSelector';
+import LanguageSelector from './LanguageSelector'; // Import ThemeSelector
 
 const Logo = () => {
     const appName = import.meta.env.VITE_APP_NAME || "RAFFLE";
@@ -26,6 +28,7 @@ const Logo = () => {
 
 const Navbar = () => {
     const { user, logout } = useAuth();
+    const { t } = useTranslation();
 
     if (!user) return null;
 
@@ -35,12 +38,13 @@ const Navbar = () => {
                 <Logo />
             </Link>
             <div className="flex items-center gap-6">
-                <div className="hidden md:block">
+                <div className="hidden md:flex items-center gap-3">
                      <ThemeSelector />
+                     <LanguageSelector />
                 </div>
                 
                 <Link to="/dashboard" className="text-skin-text-muted hover:text-skin-text-base transition-colors font-bold uppercase tracking-wider text-xs">
-                    Dashboard
+                    {t('navbar.dashboard')}
                 </Link>
                 <div className="flex items-center gap-3 border-l border-skin-border pl-6">
                     <div className="flex items-center gap-3">
@@ -67,7 +71,7 @@ const Navbar = () => {
                         onClick={logout}
                         className="text-xs font-bold text-slate-500 hover:text-skin-accent uppercase tracking-wider transition-colors"
                     >
-                        Salir
+                        {t('navbar.logout')}
                     </button>
                 </div>
             </div>

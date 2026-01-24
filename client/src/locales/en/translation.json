@@ -1,0 +1,177 @@
+{
+  "login": {
+    "connect_twitch": "Connect with Twitch",
+    "secure_access": "Secure Access • Read Only • No Spam",
+    "hero_title_1": "STREAM",
+    "hero_title_2": "RAFFLE",
+    "hero_description": "The ultimate platform to manage your Twitch giveaways.",
+    "no_bots": "No bots. No hassle.",
+    "features": {
+      "integration": {
+        "title": "Full Integration",
+        "desc": "Sync chat, followers, and subscribers instantly. Filter and organize your audience effortlessly."
+      },
+      "obs": {
+        "title": "Cinema Mode (OBS)",
+        "desc": "Clean, animated window dedicated for OBS. Your viewers will see the wheel spin in real-time."
+      },
+      "history": {
+        "title": "Secure History",
+        "desc": "Automatic winner logging. Avoid duplicates and maintain transparency in your raffles."
+      }
+    },
+    "version": "v1.0 • Powered by Zero"
+  },
+  "dashboard": {
+    "title": "DASHBOARD",
+    "welcome": "Welcome back, <1>@{{username}}</1>",
+    "new_raffle": "New Raffle",
+    "recent_activity": {
+      "title": "Recent Activity",
+      "empty_title": "No recent activity",
+      "empty_desc": "You haven't created any raffles yet. It's time to start!",
+      "create_first": "Create my first raffle"
+    },
+    "raffle": {
+      "status": {
+        "active": "Active",
+        "completed": "Completed"
+      },
+      "participants": "Participants",
+      "results": "Results",
+      "view_postcard": "View Postcard"
+    },
+    "view_history": "View full history"
+  },
+  "navbar": {
+    "dashboard": "Dashboard",
+    "logout": "Logout"
+  },
+  "raffle_form": {
+    "title": "NEW RAFFLE",
+    "subtitle": "Configure the rules. <1>Master the odds.</1>",
+    "cancel": "Cancel / Exit",
+    "import": {
+      "title": "Import",
+      "chat": "Import Viewers (Chat)",
+      "followers": "Import Followers",
+      "subs": "Import Subs"
+    },
+    "basic_info": {
+      "title": "Basic Info",
+      "raffle_title": "Raffle Title",
+      "raffle_title_placeholder": "Ex: 1K Special Raffle...",
+      "keyword": "Keyword (Command)",
+      "keyword_placeholder": "participate",
+      "manual_add": "Manually Add",
+      "manual_add_placeholder": "Names separated by comma or enter...",
+      "add_list": "Add List"
+    },
+    "advanced_options": {
+      "title": "Advanced Options",
+      "countdown": {
+        "label": "Countdown",
+        "desc": "Time limit to join",
+        "duration": "Duration (seconds)"
+      },
+      "subscriber_luck": {
+        "label": "Subscriber Luck"
+      },
+      "subscriber_only": {
+        "label": "Subscribers Only",
+        "desc": "Exclusive for subs"
+      }
+    },
+    "status": {
+      "connected": "Connected to Chat",
+      "disconnected": "Disconnected",
+      "channel": "Channel",
+      "participants": "Participants",
+      "clear_all": "Clear All"
+    },
+    "chat_area": {
+      "waiting": "Waiting for participants...",
+      "instruction_connected": "Type !{{keyword}} in chat",
+      "instruction_disconnected": "Connect chat to start"
+    },
+    "actions": {
+      "obs_link": "Link for OBS / Browser Source",
+      "copy": "Copy",
+      "copied": "Copied!",
+      "connect": "Connect Chat",
+      "disconnect": "Disconnect",
+      "start": "Open Raffle",
+      "close": "Close & Spin",
+      "continue": "Continue Raffle",
+      "finish": "Finish Raffle"
+    },
+    "alerts": {
+      "chat_error": "Could not connect to chat. Check your connection.",
+      "title_required": "You must name the raffle!",
+      "create_error": "Error starting raffle.",
+      "no_participants": "No participants!",
+      "no_eligible": "No eligible participants!",
+      "import_followers_success": "Imported {{count}} followers.",
+      "import_followers_error": "Error importing followers.",
+      "import_subs_success": "Imported {{count}} subscribers.",
+      "import_subs_error": "Error importing subscribers. (Requires broadcaster)",
+      "import_chat_error": "Error: No channel defined",
+      "import_chat_success": "Imported {{count}} viewers.",
+      "import_chat_fail": "Error importing viewers. (Make sure you are live or chat is connected)",
+      "confirm_clear": "Are you sure you want to delete ALL participants?"
+    },
+    "overlays": {
+      "review": {
+        "title": "🎉 We have a Winner!",
+        "confirm": "Confirm",
+        "al_agua": "Reroll / Reject"
+      },
+      "win": {
+        "title": "Congratulations!",
+        "desc": "<1>@{{winner}}</1> has won the raffle.",
+        "spin_another": "Spin Another",
+        "finish": "Finish"
+      },
+      "loss": {
+        "title": "Time's Up!",
+        "desc": "<1>@{{winner}}</1> missed their chance."
+      }
+    }
+  },
+  "raffle_view": {
+    "hosted_by": "Hosted by",
+    "completed": "Raffle Completed",
+    "winner": "WINNER!",
+    "al_agua": {
+      "title": "Sorry, you missed out!"
+    },
+    "loss": {
+      "title": "TIME UP",
+      "desc": "{{winner}} missed their chance"
+    },
+    "waiting": {
+      "title": "Waiting for {{winner}}...",
+      "time_up": "HURRY!!! TYPE IN CHAT"
+    },
+    "spinning": "Good Luck!"
+  },
+  "history": {
+    "title": "Full History",
+    "subtitle": "All raffles hosted.",
+    "search_placeholder": "Search by title...",
+    "clear_filters": "Clear Filters",
+    "loading": "Loading history...",
+    "empty": "No raffles found.",
+    "participants": "Participants",
+    "winner_label": "Winner",
+    "view_postcard": "View Postcard"
+  },
+  "results": {
+    "not_found": "Raffle not found",
+    "hosted_by": "Hosted by",
+    "no_winners": "No winners registered for this event.",
+    "verified_winner": "Verified Winner",
+    "link_copied": "Link Copied",
+    "share_result": "Share Result"
+  }
+}

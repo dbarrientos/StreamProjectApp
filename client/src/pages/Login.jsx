@@ -19,7 +19,8 @@ const Login = () => {
   const handleLogin = () => {
     const state = Math.random().toString(36).substring(7);
     localStorage.setItem('oauth_state', state);
-    window.location.href = 'https://localhost:3000/auth/twitch';
+    const apiUrl = import.meta.env.VITE_API_URL || 'https://localhost:3000';
+    window.location.href = `${apiUrl}/auth/twitch`;
   };
 
   return (

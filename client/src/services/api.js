@@ -1,11 +1,20 @@
 export const API_URL = import.meta.env.VITE_API_URL || 'https://localhost:3000';
 
+const getHeaders = () => {
+  const user = JSON.parse(localStorage.getItem('twitch_user') || '{}');
+  const token = user?.token;
+  return {
+    'Content-Type': 'application/json',
+    ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+  };
+};
+
+
 export const createRaffle = async (raffleData) => {
   const response = await fetch(`${API_URL}/raffles`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: getHeaders(),
+
     // Cookie-based session requires this
     credentials: 'include',
     body: JSON.stringify({ raffle: raffleData }),
@@ -17,9 +26,8 @@ export const createRaffle = async (raffleData) => {
 export const getRaffles = async () => {
     const response = await fetch(`${API_URL}/raffles`, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: getHeaders(),
+
       credentials: 'include',
     });
     if (!response.ok) throw new Error('Error fetching raffles');
@@ -29,9 +37,8 @@ export const getRaffles = async () => {
 export const updateRaffle = async (id, raffleData) => {
   const response = await fetch(`${API_URL}/raffles/${id}`, {
     method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: getHeaders(),
+
     credentials: 'include',
     body: JSON.stringify({ raffle: raffleData }),
   });
@@ -42,9 +49,8 @@ export const updateRaffle = async (id, raffleData) => {
 export const registerWinner = async (raffleId, winnerData) => {
   const response = await fetch(`${API_URL}/raffles/${raffleId}/register_winner`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: getHeaders(),
+
     credentials: 'include',
     body: JSON.stringify({ winner: winnerData }),
   });
@@ -55,9 +61,8 @@ export const registerWinner = async (raffleId, winnerData) => {
 export const getChatters = async () => {
     const response = await fetch(`${API_URL}/twitch/chatters`, {
         method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-        },
+        headers: getHeaders(),
+
         credentials: 'include',
     });
     if (!response.ok) throw new Error('Error fetching chatters');
@@ -71,9 +76,8 @@ export const getSubscribers = async (broadcasterId = null) => {
     }
     const response = await fetch(url, {
         method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-        },
+        headers: getHeaders(),
+
         credentials: 'include',
     });
     if (!response.ok) throw new Error('Error fetching subscribers');
@@ -87,9 +91,8 @@ export const getFollowers = async (broadcasterId = null) => {
     }
     const response = await fetch(url, {
         method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-        },
+        headers: getHeaders(),
+
         credentials: 'include',
     });
     if (!response.ok) throw new Error('Error fetching followers');
@@ -99,9 +102,8 @@ export const getFollowers = async (broadcasterId = null) => {
 export const getModeratedChannels = async () => {
     const response = await fetch(`${API_URL}/twitch/moderated_channels`, {
         method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-        },
+        headers: getHeaders(),
+
         credentials: 'include',
     });
     if (!response.ok) throw new Error('Error fetching moderated channels');
@@ -110,9 +112,8 @@ export const getModeratedChannels = async () => {
 export const updateUser = async (id, userData) => {
   const response = await fetch(`${API_URL}/users/${id}`, {
     method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: getHeaders(),
+
     credentials: 'include',
     body: JSON.stringify({ user: userData }),
   });

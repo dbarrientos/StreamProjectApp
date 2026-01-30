@@ -1,6 +1,7 @@
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins "https://localhost:5173", "https://127.0.0.1:5173", /https:\/\/localhost:\d+/, ENV.fetch("FRONTEND_URL", "")
+    origins "https://localhost:5173", "https://127.0.0.1:5173", /https:\/\/localhost:\d+/, ENV.fetch("FRONTEND_URL", ""), "https://stream-raffle-client.onrender.com"
+
 
     resource "*",
       headers: :any,

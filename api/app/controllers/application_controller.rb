@@ -8,6 +8,8 @@ class ApplicationController < ActionController::API
   end
 
   def authenticate_user!
+    Rails.logger.info "AUTH_DEBUG: Authenticating... Session ID: #{session.id.inspect}, User ID: #{session[:user_id].inspect}"
     render json: { error: 'Not authorized' }, status: :unauthorized unless current_user
   end
+
 end

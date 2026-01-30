@@ -2,6 +2,8 @@ class SessionsController < ApplicationController
   def create
     user = User.from_omniauth(request.env['omniauth.auth'])
     session[:user_id] = user.id
+    Rails.logger.info "LOGIN_DEBUG: Session created for user #{user.id} (#{user.username}). Session ID: #{session.id.inspect}"
+
     
     # In a real production app, return a JWT token here.
     # For this prototype, we redirect with params.
